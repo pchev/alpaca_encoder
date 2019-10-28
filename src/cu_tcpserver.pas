@@ -69,7 +69,8 @@ type
   TTCPDaemon = class(TThread)
   private
     Sock: TTCPBlockSocket;
-    FErrorMsg: TStringProc;
+    FShowError: TStringProc;
+    FShowMsg: TStringProc;
     FShowSocket: TStringProc;
     FIPaddr, FIPport: string;
     FProcessGet: TGetCmd;
@@ -86,7 +87,8 @@ type
     procedure ShowSocket;
     property IPaddr: string read FIPaddr write FIPaddr;
     property IPport: string read GetIPport write FIPport;
-    property onErrorMsg: TStringProc read FErrorMsg write FErrorMsg;
+    property onShowError: TStringProc read FShowError write FShowError;
+    property onShowMsg: TStringProc read FShowMsg write FShowMsg;
     property onShowSocket: TStringProc read FShowSocket write FShowSocket;
     property onProcessGet: TGetCmd read FProcessGet write FProcessGet;
     property onProcessPut: TPutCmd read FProcessPut write FProcessPut;
@@ -116,8 +118,7 @@ var
   msg: string;
 begin
   msg := IntToStr(sock.lasterror) + ' ' + sock.GetErrorDesc(sock.lasterror);
-  if assigned(FErrorMsg) then
-    FErrorMsg(msg);
+  if assigned(FShowError) then FShowError(msg);
 end;
 
 function TTCPDaemon.GetIPport: string;

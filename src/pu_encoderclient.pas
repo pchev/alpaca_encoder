@@ -265,7 +265,7 @@ const
   rsBattery = 'Battery';
   rsStatus = 'Status';
   rsObjectsUsedF = 'Objects used for Initialisation';
-  rsInit = 'Init';
+  rsInit = 'Init %s';
   rsEncoderConfi = 'Encoder Configuration';
   rsStepsAlpha = 'Steps (Alpha)';
   rsStepsDelta = 'Steps (Delta)';
@@ -299,7 +299,7 @@ const
   rsNotInitialis = 'Not initialised';
   rsSytemStatus = 'Sytem status:';
   rsErrorOpening2 = 'Error opening %s on port %s';
-  rsPleaseInitTh = 'Please init the 90 degree elevation first';
+  rsPleaseInitTh = 'Please init the %s degree elevation first';
   rsPleaseMoveTh = 'Please move the telescope along the two axis';
   rsTheInterface = 'The interface is either not connected or not initialized';
   rsName = 'Name';
@@ -477,6 +477,7 @@ begin
   begin
     led.color := clRed;
     led1.color := clRed;
+    led2.color := clRed;
   end;
   Clear_Init_List;
   pos_x.Text := '';
@@ -486,7 +487,6 @@ begin
   Alpha_Inversion := False;
   Delta_Inversion := False;
   Init90Y := 999999;
-  init90.font.color := clWindowText;
 end;
 
 procedure Tpop_encoder.ScopeClose;
@@ -1095,16 +1095,16 @@ begin
   begin
     newcolumn := columns.add;
     newcolumn.Caption := rsName;
-    newcolumn.Width := 70;
+    newcolumn.Width := 80;
     newcolumn := columns.add;
     newcolumn.Caption := 'Alpha';
-    newcolumn.Width := 60;
+    newcolumn.Width := 80;
     newcolumn := columns.add;
     newcolumn.Caption := 'Delta';
-    newcolumn.Width := 60;
+    newcolumn.Width := 80;
     newcolumn := columns.add;
     newcolumn.Caption := rsTime;
-    newcolumn.Width := 40;
+    newcolumn.Width := 80;
     newcolumn := columns.add;
     newcolumn.Caption := rsSel;
     newcolumn.Width := 30;
@@ -1270,10 +1270,11 @@ begin
   led.refresh;
   led1.color := clRed;
   led1.refresh;
+  led2.color := clRed;
+  led2.refresh;
   timer1.Enabled := False;
   Clear_Init_List;
   Init90Y := 999999;
-  init90.font.color := clWindowText;
   if debug then
   begin
     writeserialdebug(FormatDateTime('hh:mm:ss.zzz', now) +
@@ -1343,7 +1344,10 @@ begin
     {Check if scope level is set}
     if Init90Y = 999999 then
     begin
-      Affmsg(rsPleaseInitTh);
+      case inittype.ItemIndex of
+        0: Affmsg(Format(rsPleaseInitTh, ['0°']));
+        1: Affmsg(Format(rsPleaseInitTh, ['90°']));
+      end;
       exit;
     end;
     ;
@@ -1631,12 +1635,12 @@ end;
 procedure Tpop_encoder.list_initMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: integer);
 var
-  ht: THitTests;
+  lin: TlistItem;
 begin
   if (button = mbRight) then
   begin
-    ht := list_init.GetHitTestInfoAt(X, Y);
-    if ht = [htOnLabel] then
+    lin := list_init.GetItemAt(X, Y);
+    if lin <> nil then
     begin
       X_List := X;
       Y_List := Y;
@@ -1687,7 +1691,7 @@ begin
         exit;
       end;
     Init90Y := curstep_y;
-    init90.Font.Color := clGreen;
+    led2.Color:=clLime;
   end;
 end;
 

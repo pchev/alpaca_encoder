@@ -381,6 +381,7 @@ begin
      ex:=0;
      ey:=0;
      batteryOK:=true;
+     Result := True;
      exit;
   end;
   PurgeBuffer(encoder_port);

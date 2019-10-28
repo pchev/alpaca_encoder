@@ -6,7 +6,7 @@ interface
 
 uses cu_alpacaserver, cu_alpacadevice, cu_alpacaencoder, IniFiles,
   LazFileUtils,
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls;
 
 type
 
@@ -14,14 +14,26 @@ type
 
   Tf_main = class(TForm)
     Button2: TButton;
+    ShowTrace: TCheckBox;
+    PanelTop: TPanel;
+    GroupBox2: TGroupBox;
+    GroupBox3: TGroupBox;
+    GroupBox4: TGroupBox;
     IPAddr: TEdit;
     IPPort: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
     LabelPort: TLabel;
     Memo1: TMemo;
+    PanelStatus: TPanel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure IPAddrChange(Sender: TObject);
     procedure IPPortChange(Sender: TObject);
   private
@@ -29,7 +41,8 @@ type
     ConfigDir, ConfigFile: string;
     AlpacaServer : T_AlpacaServer;
     Encoder: T_AlpacaEncoder;
-    procedure ErrorMsg(var msg:string);
+    procedure ShowError(var msg:string);
+    procedure ShowMsg(var msg:string);
     procedure ShowSocket(var msg:string);
     procedure GetAppDir;
     procedure ReadConfig;
@@ -56,13 +69,19 @@ begin
   IPAddr.Text:=AlpacaIPAddr;
   IPPort.Text:=AlpacaIPPort;
   AlpacaServer:=T_AlpacaServer.Create(self);
-  AlpacaServer.onErrorMsg:=@ErrorMsg;
+  AlpacaServer.onShowError:=@ShowError;
+  AlpacaServer.onShowMsg:=@ShowMsg;
   AlpacaServer.onPortMsg:=@ShowSocket;
   Encoder:=T_AlpacaEncoder.Create(self);
   AlpacaServer.AddDevice(telescope,Encoder);
   AlpacaServer.IPAddr:=AlpacaIPAddr;
   AlpacaServer.IPPort:=AlpacaIPPort;
   AlpacaServer.StartServer;
+end;
+
+procedure Tf_main.FormShow(Sender: TObject);
+begin
+  encoder.SetupDialog(left,top+Height+20);
 end;
 
 procedure Wait(wt:single=5);
@@ -92,6 +111,11 @@ begin
   wait(1);
   AlpacaServer.StopServer;
   wait(1);
+end;
+
+procedure Tf_main.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  CanClose:=(MessageDlg('Closing this window will stop the Alpaca server and disconnect all the driver.'+CRLF+'Do you want to close?', mtConfirmation, mbYesNo, 0)=mrYes);
 end;
 
 function Slash(nom : string) : string;
@@ -127,14 +151,24 @@ begin
   ini.Free;
 end;
 
-procedure Tf_main.ErrorMsg(var msg:string);
+procedure Tf_main.ShowError(var msg:string);
 begin
-  memo1.Lines.Add(msg);
+  memo1.Lines.Add('Error: '+msg);
+end;
+
+procedure Tf_main.ShowMsg(var msg:string);
+begin
+  if ShowTrace.Checked then memo1.Lines.Add(msg);
 end;
 
 procedure Tf_main.ShowSocket(var msg:string);
+var buf: string;
 begin
-  if msg<>AlpacaIPPort then LabelPort.Caption:=msg;
+  LabelPort.Caption:='Server running on port '+msg;
+  if msg<>IPPort.Text then begin
+     buf:='Configured on port '+IPPort.Text+' but running on '+msg;
+     ShowError(buf);
+  end;
 end;
 
 procedure Tf_main.Button1Click(Sender: TObject);

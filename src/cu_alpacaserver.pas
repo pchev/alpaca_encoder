@@ -33,9 +33,11 @@ type
       DeviceList: T_AlpacaDeviceList;
       ServerTransactionID: LongWord;
       FIPAddr, FIPPort : string;
-      FErrorMsg: TStringProc;
+      FShowMsg: TStringProc;
+      FShowError: TStringProc;
       FPortMsg: TStringProc;
-      procedure ErrorMsg(var msg:string);
+      procedure ShowError(var msg:string);
+      procedure ShowMsg(var msg:string);
       procedure ShowSocket(var msg:string);
       function ProcessGet(HttpRequest: string): string;
       function ProcessPut(HttpRequest,arg: string): string;
@@ -47,7 +49,8 @@ type
       procedure AddDevice(devtype:TAlpacaDeviceType; device:T_AlpacaDevice);
       property IPAddr:string read FIPAddr write FIPAddr;
       property IPPort:string read FIPPort write FIPPort;
-      property onErrorMsg: TStringProc read FErrorMsg write FErrorMsg;
+      property onShowError: TStringProc read FShowError write FShowError;
+      property onShowMsg: TStringProc read FShowMsg write FShowMsg;
       property onPortMsg: TStringProc read FPortMsg write FPortMsg;
   end;
 
@@ -77,7 +80,8 @@ begin
   DefaultFormatSettings.TimeSeparator := ':';
   TCPDaemon:=TTCPDaemon.Create;
   DeviceList:=T_AlpacaDeviceList.Create;
-  TCPDaemon.onErrorMsg := @ErrorMsg;
+  TCPDaemon.onShowError := @ShowError;
+  TCPDaemon.onShowMsg := @ShowMsg;
   TCPDaemon.onShowSocket := @ShowSocket;
   TCPDaemon.onProcessGet:=@ProcessGet;
   TCPDaemon.onProcessPut:=@ProcessPut;
@@ -120,9 +124,14 @@ begin
   TCPDaemon.Terminate;
 end;
 
-procedure T_AlpacaServer.ErrorMsg(var msg:string);
+procedure T_AlpacaServer.ShowError(var msg:string);
 begin
-  if assigned(FErrorMsg) then FErrorMsg(msg);
+   if assigned(FShowError) then FShowError(msg);
+end;
+
+procedure T_AlpacaServer.ShowMsg(var msg:string);
+begin
+  if assigned(FShowMsg) then FShowMsg(msg);
 end;
 
 procedure T_AlpacaServer.ShowSocket(var msg:string);
@@ -135,6 +144,7 @@ var req,doc: string;
     i,p,n,httpstatus: integer;
 begin
   try
+  ShowMsg(HttpRequest);
   req:=HttpRequest;
   n:=-1;
   for i:=0 to DeviceList.Count-1 do begin
@@ -148,6 +158,7 @@ begin
   if n>=0 then begin
     inc(ServerTransactionID);
     doc:=DeviceList[n].device.ProcessGetRequest(req,ServerTransactionID,httpstatus) + CRLF;
+    ShowMsg(doc);
     if httpstatus=200 then begin
     result:='HTTP/1.0 200' + CRLF
            +'Connection: close' + CRLF
