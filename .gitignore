@@ -1,0 +1,23 @@
+# ignore backup dir
+src/backup/
+# ignore fpc makefiles
+Makefile
+Makefile.fpc
+Makefile.fpcxxx
+# ignore build dir
+src/lib/
+component/lib/
+component/synapse/source/lib/lib/
+# ignore various files
+src/*.lps
+# ignore binary
+*.o
+src/alpaca_encoder
+src/alpaca_encoder.exe
+alpaca_encoder*.rpm
+alpaca_encoder*.deb
+alpaca_encoder*.exe
+alpaca_encoder*.zip
+alpaca_encoder*.tar.xz
+alpaca_encoder*.tar.bz2
+alpaca_encoder*.dmg
