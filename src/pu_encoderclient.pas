@@ -317,6 +317,7 @@ const
   rsErrorOpening2 = 'Error opening %s on port %s';
   rsPleaseInitTh = 'Please init the %s degree elevation first';
   rsNotEnoughDis = 'Not enough displacement, replacing the first point.';
+  rsReplacingPrev='Replacing previous point %s at the same position.';
   rsTheInterface = 'The interface is either not connected or not initialized';
   rsName = 'Name';
   rsCoordinates = 'Coordinates:';
@@ -1080,6 +1081,7 @@ begin
   wait_create := True;
   first_show := True;
   Init90Y := 999999;
+  InitCount := 0;
   init_objects := TList.Create;
   wait_create := False;
   ReadConfig;
@@ -1364,7 +1366,7 @@ function Tpop_encoder.InitObject(alpha, delta: double):string;
 var
   p, q: Pinit_object;
   listitem: tlistitem;
-  s1, s2: integer;
+  s1, s2, i: integer;
   a1, d1: double;
   inittime: Tdatetime;
   Source: string;
@@ -1394,7 +1396,7 @@ begin
         Encoder_Error;
         exit;
       end;
-    {be sure first two initialisation are valid}
+    {be sure we not sync two time at the same place}
     if init_objects.Count = 1 then
     begin
       q := init_objects[0];
@@ -1403,9 +1405,22 @@ begin
         Clear_Init_List;
         Affmsg(rsNotEnoughDis);
       end;
+    end
+    else begin
+      for i:=0 to init_objects.Count-1 do begin
+        q:=init_objects[i];
+        if (abs(q.steps_x - curstep_x) < 5) or (abs(q.steps_y - curstep_y) < 5) then
+        begin
+          Affmsg(Format(rsReplacingPrev,[q.Name]));
+          init_objects.Delete(i);
+          list_init.Items[i].Delete;
+          break;
+        end;
+      end;
     end;
     {... store information in global vars and Tlist}
-    Source:='sync_'+IntToStr(list_init.Items.Count+1);
+    inc(InitCount);
+    Source:='sync_'+IntToStr(InitCount);
     inittime := now;
     last_init := datetimetostr(inittime);
     last_init_target := Source;

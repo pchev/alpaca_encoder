@@ -90,6 +90,7 @@ var
   init_objects: TList;                 // List to store Initialisation objects coordinates
   Alpha_Inversion: boolean;          // Encoder direction x
   Delta_Inversion: boolean;          // Encoder direction y
+  InitCount: integer;                // counter of initialization done
   {Current values}
   curdeg_x, curdeg_y: double;        // current equatorial position in degrees
   cur_az, cur_alt: double;           // current alt-az position in degrees
