@@ -32,6 +32,9 @@ Add Tcp/Ip protocol, Patrick Chevalley Aug 2014
 interface
 
 uses   Classes,
+   {$ifdef mswindows}
+   registry,
+   {$endif}
    synaser, SysUtils, FileUtil, synautil, blcksock, synsock;
 
 function OpenCom(var ser: TBlockSerial;
