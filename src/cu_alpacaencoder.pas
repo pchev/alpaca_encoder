@@ -510,8 +510,6 @@ begin
     FErrorNumber:=ERR_INVALID_VALUE;
     FErrorMessage:=MSG_INVALID_VALUE +' sitelongitude='+ FormatFloat('0.000',value);
   end;
-
-
 end;
 
 function  T_AlpacaEncoder.slewing: boolean;
@@ -709,11 +707,16 @@ begin
 end;
 
 procedure T_AlpacaEncoder.synctocoordinates(ra,dec: double);
+var txt: string;
 begin
   if (dec>=-90)and(dec<=90)and(ra>=0)and(ra<=24)  then begin
     TargetRA:=ra;
     TargetDEC:=dec;
-    pop_encoder.ScopeSync(ra,dec);
+    txt:=pop_encoder.ScopeSync(ra,dec);
+    if txt<>'' then begin
+      FErrorNumber:=ERR_DRIVER_ERROR;
+      FErrorMessage:=txt;
+    end;
   end
   else begin
     FErrorNumber:=ERR_INVALID_VALUE;
@@ -722,8 +725,19 @@ begin
 end;
 
 procedure T_AlpacaEncoder.synctotarget;
+var txt: string;
 begin
-  pop_encoder.ScopeSync(TargetRA,TargetDEC);
+  if (TargetRA<>NullCoord)and(TargetDEC<>NullCoord) then begin
+    txt:=pop_encoder.ScopeSync(TargetRA,TargetDEC);
+    if txt<>'' then begin
+      FErrorNumber:=ERR_DRIVER_ERROR;
+      FErrorMessage:=txt;
+    end;
+  end
+  else begin
+    FErrorNumber:=ERR_INVALID_VALUE;
+    FErrorMessage:=MSG_INVALID_VALUE +' TargetRightAscension or TargetDeclination not set.';
+  end;
 end;
 
 procedure T_AlpacaEncoder.unpark;

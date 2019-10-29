@@ -192,7 +192,7 @@ type
     ConfigDir, ConfigFile,AlpacaConfig: string;
     procedure GetAppDir;
     procedure ScaleMainForm;
-    procedure InitObject(alpha, delta: double);
+    function InitObject(alpha, delta: double):string;
     procedure SetRes;
     procedure Clear_Init_List;
     procedure AffMsg(msgtxt: string);
@@ -243,7 +243,7 @@ type
       var refreshrate: integer);
     function  ScopeGetStatus:string;
     procedure ScopeSetObs(la, lo: double);
-    procedure ScopeSync(ra, Dec: double);
+    function ScopeSync(ra, Dec: double):string;
     procedure ScopeGetRaDec(out ar, de: double; out ok: boolean);
     procedure ScopeGetAltAz(out alt, az: double; out ok: boolean);
     function  ScopeGetSideralTime:double;
@@ -316,7 +316,7 @@ const
   rsSytemStatus = 'Sytem status:';
   rsErrorOpening2 = 'Error opening %s on port %s';
   rsPleaseInitTh = 'Please init the %s degree elevation first';
-  rsPleaseMoveTh = 'Please move the telescope along the two axis';
+  rsNotEnoughDis = 'Not enough displacement, replacing the first point.';
   rsTheInterface = 'The interface is either not connected or not initialized';
   rsName = 'Name';
   rsCoordinates = 'Coordinates:';
@@ -525,9 +525,9 @@ begin
   Result := (init_objects.Count >= 2);
 end;
 
-procedure Tpop_encoder.ScopeSync(ra, Dec: double);
+function Tpop_encoder.ScopeSync(ra, Dec: double):string;
 begin
-  InitObject(15 * ra, Dec);
+  result:=InitObject(15 * ra, Dec);
 end;
 
 procedure Tpop_encoder.ScopeShowModal(var ok: boolean);
@@ -1064,7 +1064,6 @@ begin
   if msgtxt <> '' then
   begin
     Istatus := 10000 div Timer1.Interval;
-    Beep;
   end;
   statusbar1.SimpleText := msgtxt;
   statusbar1.Refresh;
@@ -1360,7 +1359,7 @@ begin
   end;
 end;
 
-procedure Tpop_encoder.InitObject(alpha, delta: double);
+function Tpop_encoder.InitObject(alpha, delta: double):string;
 {Add a point to the initialisation list.}
 var
   p, q: Pinit_object;
@@ -1371,6 +1370,7 @@ var
   Source: string;
   msg: string;
 begin
+  result:='';
   {Check if Resolution has been set}
   if port_opened and resolution_sent then
   begin
@@ -1378,9 +1378,10 @@ begin
     if Init90Y = 999999 then
     begin
       case inittype.ItemIndex of
-        0: Affmsg(Format(rsPleaseInitTh, ['0°']));
-        1: Affmsg(Format(rsPleaseInitTh, ['90°']));
+        0: result:=Format(rsPleaseInitTh, ['0°']);
+        1: result:=Format(rsPleaseInitTh, ['90°']);
       end;
+      AffMsg(result);
       exit;
     end;
     ;
@@ -1388,7 +1389,8 @@ begin
     if not timer1.Enabled then
       if not Encoder_query(curstep_x, curstep_y, msg) then
       begin
-        AffMsg(msg);
+        result:=msg;
+        AffMsg(result);
         Encoder_Error;
         exit;
       end;
@@ -1398,8 +1400,8 @@ begin
       q := init_objects[0];
       if (abs(q.steps_x - curstep_x) < 5) or (abs(q.steps_y - curstep_y) < 5) then
       begin
-        Affmsg(rsPleaseMoveTh);
-        exit;
+        Clear_Init_List;
+        Affmsg(rsNotEnoughDis);
       end;
     end;
     {... store information in global vars and Tlist}
@@ -1549,7 +1551,8 @@ begin
   end
   else
   begin
-    Affmsg(rsTheInterface);
+    result:=rsTheInterface;
+    Affmsg(result);
   end;
 end;
 
