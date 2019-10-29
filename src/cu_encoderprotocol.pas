@@ -56,12 +56,12 @@ type
 function Encoder_Open(model, commport, baud, parity, Data, stop,
   timeout, inttimeout: string): boolean;
 function Encoder_Close: boolean;
-function Encoder_Query(var Xpos, Ypos: integer; var msg: string): boolean;
+function Encoder_Query(out Xpos, Ypos: integer; out msg: string): boolean;
 function Encoder_Set_Resolution(Xres, Yres: integer): boolean;
 function Encoder_Init(Xpos, Ypos: integer): boolean;
 function Encoder_Set_Init_Flag: boolean;
 function Encoder_Get_Init_Flag(var initflag: string): boolean;
-function GetDeviceStatus(var ex, ey: integer; var batteryOK: boolean): boolean;
+function GetDeviceStatus(out ex, ey: integer; out batteryOK: boolean): boolean;
 
 const
   ValidPort = 'COM1 COM2 COM3 COM4 COM5 COM6 COM7 COM8';
@@ -184,7 +184,7 @@ begin
   Result := True;
 end;
 
-function Encoder_Query(var Xpos, Ypos: integer; var msg: string): boolean;
+function Encoder_Query(out Xpos, Ypos: integer; out msg: string): boolean;
 var
   buf, a, b: string;
   Count, p: integer;
@@ -368,7 +368,7 @@ begin
   end;
 end;
 
-function GetDeviceStatus(var ex, ey: integer; var batteryOK: boolean): boolean;
+function GetDeviceStatus(out ex, ey: integer; out batteryOK: boolean): boolean;
 var
   buf: string;              // #### added variable for intelliscope
   Count, p: integer;

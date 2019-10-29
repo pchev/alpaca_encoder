@@ -24,8 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 interface
 
-uses  cu_alpacadevice, math,
-  Classes, SysUtils;
+uses  cu_alpacadevice, Classes, SysUtils;
 
 type
 
@@ -152,6 +151,7 @@ begin
   status:=200;
   FErrorNumber:=0;
   FErrorMessage:='';
+  ok:=false; i:=0; setlength(axr,0); value:='';
   if method='connected' then begin
     ok:=Connected;
     result:=FormatBoolResp(ok,ClientTransactionID,ServerTransactionID,FErrorNumber,FErrorMessage);
@@ -391,7 +391,6 @@ function  T_AlpacaTelescope.ProcessPutRequest(req,arg: string; ServerTransaction
 var method,p1,p2,value: string;
     ok,bvalue: boolean;
     x,y: double;
-    lst:TStringList;
     params: TStringlist;
     i,j: integer;
     ClientID,ClientTransactionID: LongWord;
@@ -405,6 +404,7 @@ begin
   status:=200;
   FErrorNumber:=0;
   FErrorMessage:='';
+  bvalue:=false; value:='';
   if method='action' then begin
     if GetParamString(params,'Action',p1) and GetParamString(params,'Parameters',p2) then
       value:=Action(p1,p2);
@@ -585,10 +585,8 @@ begin
 end;
 
 function  T_AlpacaTelescope.ProcessSetup(req: string; out status: integer):string;
-var method,value: string;
-    ok: boolean;
+var method: string;
     params: TStringlist;
-    i: integer;
 begin
   params:=TStringlist.Create;
   DecodeSetupRequest(req,method,params);

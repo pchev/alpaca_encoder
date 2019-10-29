@@ -311,7 +311,7 @@ begin
 end;
 
 function T_AlpacaServer.ProcessSetup(HttpRequest: string): string;
-var doc,req,setuppath: string;
+var doc,req: string;
     n,i,p,httpstatus: integer;
 begin
   if HttpRequest='/setup' then begin
@@ -426,8 +426,6 @@ end;
 function T_AlpacaServer.ProcessManagement(HttpRequest: string): string;
 var doc: string;
     method,value: string;
-    ok: boolean;
-    lst:TStringList;
     apiversions: array of integer;
     params: TStringlist;
     i,status: integer;

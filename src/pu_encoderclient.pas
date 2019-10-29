@@ -33,10 +33,11 @@ will work with all systems using same protocol
 
 -------------------------------------------------------------------------------}
 
+{$WARN 5024 off : Parameter "$1" not used}
 interface
 
 uses UScaleDPI, math,
-  SysUtils, Classes, Graphics, Controls, Spin,
+  SysUtils, Classes, Graphics, Controls, Spin, LCLIntf,
   cu_encoderprotocol, cu_serial, cu_taki, LazFileUtils, LazSysUtils,
   Forms, Dialogs, StdCtrls, Buttons, inifiles, ComCtrls, Menus, ExtCtrls;
 
@@ -189,7 +190,7 @@ type
 
   private
     { Private declarations }
-    ConfigDir, ConfigFile,AlpacaConfig: string;
+    Appdir, ConfigDir, ConfigFile,AlpacaConfig: string;
     procedure GetAppDir;
     procedure ScaleMainForm;
     function InitObject(alpha, delta: double):string;
@@ -197,8 +198,7 @@ type
     procedure Clear_Init_List;
     procedure AffMsg(msgtxt: string);
     procedure GetSideralTime;
-    procedure ComputeCoord(p1, p2: PInit_object; x, y: integer;
-      var alpha, delta: double);
+    procedure ComputeCoord(p1, p2: PInit_object; x, y: integer;out alpha, delta: double);
     procedure GetCoordinates;
     procedure ShowCoordinates;
     procedure QueryStatus;
@@ -270,6 +270,15 @@ const
   pid2 = pi/2;
 
 implementation
+
+  {$ifdef unix}
+  uses
+  unix, baseunix;
+  {$endif}
+  {$ifdef mswindows}
+  uses
+  Windows;
+  {$endif}
 
 {$R *.lfm}
 
@@ -462,10 +471,104 @@ begin
 end;
 
 procedure Tpop_encoder.Getappdir;
+var buf:string;
+    {$ifdef darwin}
+    i:integer;
+    {$endif}
+const
+  {$ifdef linux}
+     SharedDir = '../share/alpaca_encoder';
+   {$endif}
+   {$ifdef darwin}
+     SharedDir = './';
+   {$endif}
+   {$ifdef mswindows}
+     SharedDir = '.\';
+   {$endif}
 begin
+  {$ifdef darwin}
+    //  try current path
+    Appdir := getcurrentdir;
+    if not DirectoryExists(slash(Appdir)+slash('doc')) then
+    begin
+      // try under app bundle
+      Appdir := ExtractFilePath(ParamStr(0));
+      i := pos('.app/', Appdir);
+      if i > 0 then
+      begin
+        Appdir := ExtractFilePath(copy(Appdir, 1, i));
+      end;
+      if not DirectoryExists(slash(Appdir)+slash('doc')) then
+      begin
+         // try default location
+        Appdir := '/Applications/CCDciel';
+      end;
+    end;
+  {$else}
+  Appdir:=getcurrentdir;
+  if not DirectoryExists(slash(Appdir)+slash('doc')) then begin
+      Appdir:=ExtractFilePath(ParamStr(0));
+  end;
+  {$endif}
+  {$ifdef unix}
+  Appdir:=expandfilename(Appdir);
+  {$endif}
+  // Be sur the doc directory exists
+   if (not directoryexists(slash(appdir)+slash('doc'))) then begin
+     // try under the current directory
+     buf:=GetCurrentDir;
+     if (directoryexists(slash(buf)+slash('doc'))) then
+        appdir:=buf
+     else begin
+        // try under the program directory
+        buf:=ExtractFilePath(ParamStr(0));
+        if (directoryexists(slash(buf)+slash('doc'))) then
+           appdir:=buf
+        else begin
+            // try share directory under current location
+            buf:=ExpandFileName(slash(GetCurrentDir)+SharedDir);
+            if (directoryexists(slash(buf)+slash('doc'))) then
+               appdir:=buf
+            else begin
+               // try share directory at the same location as the program
+               buf:=ExpandFileName(slash(ExtractFilePath(ParamStr(0)))+SharedDir);
+               if (directoryexists(slash(buf)+slash('doc'))) then
+                  appdir:=buf
+            else begin
+               // try in /usr
+               buf:=ExpandFileName(slash('/usr/bin')+SharedDir);
+               if (directoryexists(slash(buf)+slash('doc'))) then
+                  appdir:=buf
+            else begin
+               // try /usr/local
+               buf:=ExpandFileName(slash('/usr/local/bin')+SharedDir);
+               if (directoryexists(slash(buf)+slash('doc'))) then
+                  appdir:=buf
+            else begin
+                // try in C:\Program Files
+                buf:='C:\Program Files\CCDciel';
+                if (directoryexists(slash(buf)+slash('doc'))) then
+                   appdir:=buf
+            else begin
+               // try in C:\Program Files (x86)
+               buf:='C:\Program Files (x86)\CCDciel';
+               if (directoryexists(slash(buf)+slash('doc'))) then
+                  appdir:=buf
+
+               else begin
+                   Appdir:='';
+               end;
+            end;
+            end;
+            end;
+            end;
+            end;
+        end;
+     end;
+   end;
   ConfigDir:=GetAppConfigDirUTF8(false,true);
   ConfigFile:=slash(ConfigDir)+'encoder.ini';
-  AlpacaConfig:=slash(ConfigDir)+'alpaca.ini'; ;
+   AlpacaConfig:=slash(ConfigDir)+'alpaca.ini'; ;
 end;
 
 procedure Tpop_encoder.ScaleMainForm;
@@ -600,6 +703,7 @@ begin
   case Mounttype.ItemIndex of
     0 :  result:=2;
     1 :  result:=0;
+    else result:=0;
   end;
 end;
 
@@ -820,8 +924,7 @@ begin
   result := SidTim(jd0, ut, Longitude);   // in radian
 end;
 
-procedure Tpop_encoder.ComputeCoord(p1, p2: PInit_object; x, y: integer;
-  var alpha, delta: double);
+procedure Tpop_encoder.ComputeCoord(p1, p2: PInit_object; x, y: integer; out alpha, delta: double);
 var
   theta, phi, tim, tim0, tim1, tim2: double;
 begin
@@ -1773,11 +1876,6 @@ begin
   end;
 end;
 
-procedure Tpop_encoder.SpeedButton6Click(Sender: TObject);
-begin
-  ShowHelp;
-end;
-
 procedure Tpop_encoder.CheckBox4Click(Sender: TObject);
 begin
   if first_show then
@@ -1787,5 +1885,101 @@ begin
   else
     FormStyle := fsNormal;
 end;
+
+{$ifdef mswindows}
+function ExecuteFile(const FileName: string): integer;
+var
+  zFileName, zParams, zDir: array[0..255] of char;
+begin
+  Result := ShellExecute(Application.MainForm.Handle, nil,
+    StrPCopy(zFileName, FileName), StrPCopy(zParams, ''),
+    StrPCopy(zDir, ''), SW_SHOWNOACTIVATE);
+end;
+
+{$endif}
+
+{$ifdef unix}
+function words(str, sep: string; p, n: integer; isep: char = ' '): string;
+var
+  i, j: integer;
+begin
+  Result := '';
+  str := trim(str);
+  for i := 1 to p - 1 do
+  begin
+    j := pos(isep, str);
+    if j = 0 then
+      j := length(str) + 1;
+    str := trim(copy(str, j + 1, length(str)));
+  end;
+  for i := 1 to n do
+  begin
+    j := pos(isep, str);
+    if j = 0 then
+      j := length(str) + 1;
+    Result := Result + trim(copy(str, 1, j - 1)) + sep;
+    str := trim(copy(str, j + 1, length(str)));
+  end;
+end;
+
+function ExecFork(cmd: string; p1: string = ''; p2: string = ''; p3: string = '';
+  p4: string = ''; p5: string = ''): integer;
+var
+  parg: array[1..7] of PChar;
+begin
+  Result := fpFork;
+  if Result = 0 then
+  begin
+    parg[1] := PChar(cmd);
+    if p1 = '' then  parg[2] := nil
+    else parg[2] := PChar(p1);
+    if p2 = '' then parg[3] := nil
+    else parg[3] := PChar(p2);
+    if p3 = '' then parg[4] := nil
+    else parg[4] := PChar(p3);
+    if p4 = '' then parg[5] := nil
+    else parg[5] := PChar(p4);
+    if p5 = '' then parg[6] := nil
+    else parg[6] := PChar(p5);
+    parg[7] := nil;
+    fpExecVP(cmd, PPChar(@parg[1]));
+  end;
+end;
+
+function ExecuteFile(const FileName: string): integer;
+var
+  cmd, p1, p2, p3, p4: string;
+const
+{$ifdef darwin}
+  OpenFileCMD: string = 'open';
+{$else}
+  OpenFileCMD: string = 'xdg-open';
+{$endif}
+begin
+  cmd := trim(words(OpenFileCMD, ' ', 1, 1));
+  p1 := trim(words(OpenFileCMD, ' ', 2, 1));
+  p2 := trim(words(OpenFileCMD, ' ', 3, 1));
+  p3 := trim(words(OpenFileCMD, ' ', 4, 1));
+  p4 := trim(words(OpenFileCMD, ' ', 5, 1));
+
+  if p1 = '' then
+    Result := ExecFork(cmd, FileName)
+  else if p2 = '' then
+    Result := ExecFork(cmd, p1, FileName)
+  else if p3 = '' then
+    Result := ExecFork(cmd, p1, p2, FileName)
+  else if p4 = '' then
+    Result := ExecFork(cmd, p1, p2, p3, FileName)
+  else
+    Result := ExecFork(cmd, p1, p2, p3, p4, FileName);
+
+end;
+{$endif}
+
+procedure Tpop_encoder.SpeedButton6Click(Sender: TObject);
+begin
+  ExecuteFile(slash(Appdir)+slash('doc')+'encoder.html');
+end;
+
 
 end.

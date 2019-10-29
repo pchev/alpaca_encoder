@@ -36,7 +36,7 @@ procedure AddStar(b, d, t, f, h: double);
 procedure Equ2Tel(b, d, t: double; var f, h: double);
 //        RA, DEC, Time ->  Az, Alt
 
-procedure Tel2Equ(f, h, t: double; var b, d: double);
+procedure Tel2Equ(f, h, t: double; out b, d: double);
 //        Az, Alt, Time ->  RA, DEC
 
 
@@ -75,7 +75,7 @@ begin
   y[3, 1] := sin(h);
 end;
 
-procedure sub_det(var w: double); // 650
+procedure sub_det(out w: double); // 650
 begin
   w := v[1, 1] * v[2, 2] * v[3, 3] + v[1, 2] * v[2, 3] * v[3, 1];
   w := w + v[1, 3] * v[3, 2] * v[2, 1];
@@ -213,7 +213,7 @@ begin
   h := h - z3;
 end;
 
-procedure Tel2Equ(f, h, t: double; var b, d: double);
+procedure Tel2Equ(f, h, t: double; out b, d: double);
 //        Az, Alt, Time ->  RA, DEC
 var
   i, j: integer;

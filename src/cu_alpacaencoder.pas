@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 interface
 
-uses  cu_alpacatelescope, cu_alpacadevice, pu_encoderclient, math,
+uses  cu_alpacatelescope, cu_alpacadevice, pu_encoderclient,
   Forms, Classes, SysUtils;
 
 type
@@ -546,6 +546,7 @@ begin
   if TargetDEC>NullCoord then
     result:=TargetDEC
   else begin
+    result:=0;
     FErrorNumber:=ERR_VALUE_NOT_SET;
     FErrorMessage:=MSG_VALUE_NOT_SET;
   end;
@@ -566,6 +567,7 @@ begin
   if TargetDEC>NullCoord then
     result:=TargetRA
   else begin
+    result:=0;
     FErrorNumber:=ERR_VALUE_NOT_SET;
     FErrorMessage:=MSG_VALUE_NOT_SET;
   end;

@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 interface
 
-uses math,
+uses
   Classes, SysUtils;
 
 type
@@ -176,11 +176,9 @@ result:=true;
 end;
 
 function T_AlpacaDevice.DecodeSetupRequest(req: string; out method: string; var params: TStringlist):boolean;
-var i,p: integer;
-    buf:string;
+var p: integer;
 begin
 result:=false;
-buf:=copy(req,1,length(FSetupPath));
 if copy(req,1,length(FSetupPath))<>FSetupPath then exit;
 Delete(req,1,length(FSetupPath));
 p:=pos('?',req);
@@ -336,7 +334,7 @@ end;
 
 function  T_AlpacaDevice.FormatIntArrayResp(value:array of integer; ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
 var buf: string;
-    n,i,j: integer;
+    n,i: integer;
 begin
   n:=length(value);
   if n=0 then
@@ -369,7 +367,7 @@ end;
 
 function  T_AlpacaDevice.FormatAxisRateResp(value:TAxisRates; ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
 var buf: string;
-    n,i,j: integer;
+    n,i: integer;
 begin
   n:=length(value);
   if n=0 then
