@@ -29,6 +29,10 @@ install -m 755 -d $destdir/share/alpaca_encoder/doc
 
 install -v -m 755 -s src/alpaca_encoder  $destdir/bin/alpaca_encoder
 install -v -m 644 doc/encoder.html $destdir/share/alpaca_encoder/doc/encoder.html
+install -v -m 644 doc/encoder1.png $destdir/share/alpaca_encoder/doc/encoder1.png
+install -v -m 644 doc/encoder2.png $destdir/share/alpaca_encoder/doc/encoder2.png
+install -v -m 644 doc/encoder3.png $destdir/share/alpaca_encoder/doc/encoder3.png
+install -v -m 644 doc/encoder4.png $destdir/share/alpaca_encoder/doc/encoder4.png
 install -v -m 644 packages/Linux/share/applications/alpaca_encoder.desktop $destdir/share/applications/alpaca_encoder.desktop
 install -v -m 644 packages/Linux/share/metainfo/alpaca_encoder.appdata.xml $destdir/share/metainfo/alpaca_encoder.appdata.xml
 install -v -m 644 packages/Linux/share/doc/alpaca_encoder/changelog $destdir/share/doc/alpaca_encoder/changelog
