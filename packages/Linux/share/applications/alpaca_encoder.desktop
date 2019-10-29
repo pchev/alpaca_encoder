@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Alpaca_Encoder
+Comment=ASCOM Alpaca driver for telescope encoder
+Exec=alpaca_encoder
+Icon=alpaca_encoder
+Terminal=false
+Type=Application
+Categories=Education;Science;Astronomy;
+GenericName=Alpaca_Encoder

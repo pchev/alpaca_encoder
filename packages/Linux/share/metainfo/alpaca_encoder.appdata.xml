@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+ <id type="desktop">alpaca_encoder.desktop</id>
+ <metadata_license>CC0-1.0</metadata_license>
+ <project_license>GPL-2.0+</project_license>
+ <name>Alpaca_Encoder</name>
+ <summary>ASCOM Alpaca driver for telescope encoder</summary>
+ <description>
+  <p>
+    ASCOM Alpaca driver for telescope encoder.
+  </p>
+  <p>
+    ASCOM Alpaca driver for telescope encoder working with Tangent,Ouranos, NGC MAX,MicroGuider,..
+    and all system using the same protocol. 
+  </p>
+ </description>
+ <screenshots>
+  <screenshot type="default">
+      <image>https://github.com/pchev/alpaca_encoder</image>
+      <caption>The main window of Alpaca_Encoder</caption>
+  </screenshot>
+ </screenshots>
+ <url type="homepage">https://github.com/pchev/alpaca_encoder</url>
+ <updatecontact>pch@ap-i.net</updatecontact>
+</application>

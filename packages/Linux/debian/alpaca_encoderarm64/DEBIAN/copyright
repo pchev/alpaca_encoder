@@ -1,0 +1,15 @@
+
+Copyright: 2019 Patrick Chevalley <pch@ap-i.net>
+
+Information :
+Name        : alpaca_encoder
+Version     : 0.1.0
+Release     : 1
+Group       : Sciences/Astronomy
+License     : GPL-2+
+Packager    : Patrick Chevalley
+URL         : https://github.com/pchev/alpaca_encoder
+Summary     : ASCOM Alpaca driver for telescope encoder
+Description :
+ASCOM Alpaca driver for telescope encoder working with Tangent,Ouranos, NGC MAX,MicroGuider,..
+and all system using the same protocol. 
