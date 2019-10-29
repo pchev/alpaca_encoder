@@ -213,8 +213,8 @@ var buf: string;
 begin
 result:=GetParamString(params,key,buf);
 if result then begin
-   value:=StrToFloatDef(buf,nan);
-   if value=nan then begin
+   value:=StrToFloatDef(buf,NullCoord);
+   if value=NullCoord then begin
      FErrorMessage:=MSG_INVALID_VALUE+' '+key;
      FErrorNumber:=ERR_INVALID_VALUE;
      result:=false;
