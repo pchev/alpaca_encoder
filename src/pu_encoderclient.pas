@@ -2,16 +2,16 @@ unit pu_encoderclient;
 
 {$MODE Delphi}
 
-{****************************************************************
-Copyright (C) 2000 Patrick Chevalley
+{
+Copyright (C) 2019 Patrick Chevalley
 
 http://www.ap-i.net
 pch@ap-i.net
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,9 +19,9 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-****************************************************************}
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+}
 
 {------------- interface for ouranos like system. ----------------------------
 
@@ -37,7 +37,6 @@ interface
 
 uses UScaleDPI, math,
   SysUtils, Classes, Graphics, Controls, Spin,
-   //u_projection, u_util,
   cu_encoderprotocol, cu_serial, cu_taki, LazFileUtils, LazSysUtils,
   Forms, Dialogs, StdCtrls, Buttons, inifiles, ComCtrls, Menus, ExtCtrls;
 
@@ -46,16 +45,29 @@ type
   { Tpop_encoder }
 
   Tpop_encoder = class(TForm)
+    Button3: TButton;
+    GroupBox6: TGroupBox;
+    GroupBox8: TGroupBox;
+    IPAddr: TEdit;
+    IPPort: TEdit;
     Label25: TLabel;
     Label26: TLabel;
     Label27: TLabel;
+    Label28: TLabel;
+    Label29: TLabel;
+    Label30: TLabel;
+    LabelPort: TLabel;
     led2: TEdit;
+    MemoAlpaca: TMemo;
     PageControl1: TPageControl;
     Panel4: TPanel;
     Panel5: TPanel;
     Panel6: TPanel;
     Panel7: TPanel;
+    Panel8: TPanel;
     PanelSimulator: TPanel;
+    PanelStatus: TPanel;
+    ShowTrace: TCheckBox;
     SimulatorX: TSpinEdit;
     SimulatorY: TSpinEdit;
     TabSheet1: TTabSheet;
@@ -99,6 +111,7 @@ type
     DatabitBox: TComboBox;
     StopbitBox: TComboBox;
     Label13: TLabel;
+    TabSheet4: TTabSheet;
     TimeOutBox: TComboBox;
     Mounttype: TRadioGroup;
     Button2: TButton;
@@ -142,11 +155,11 @@ type
     Z3T: TFloatSpinEdit;
     {Ouranos compatible IO}
     procedure cbo_typeChange(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormDestroy(Sender: TObject);
     procedure query_encoder;
     {Utility and form functions}
     procedure formcreate(Sender: TObject);
-    procedure kill(Sender: TObject; var CanClose: boolean);
     procedure SimulatorXChange(Sender: TObject);
     procedure SimulatorYChange(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
@@ -176,7 +189,7 @@ type
 
   private
     { Private declarations }
-    ConfigDir, ConfigFile: string;
+    ConfigDir, ConfigFile,AlpacaConfig: string;
     procedure GetAppDir;
     procedure ScaleMainForm;
     procedure InitObject(alpha, delta: double);
@@ -448,6 +461,7 @@ procedure Tpop_encoder.Getappdir;
 begin
   ConfigDir:=GetAppConfigDirUTF8(false,true);
   ConfigFile:=slash(ConfigDir)+'encoder.ini';
+  AlpacaConfig:=slash(ConfigDir)+'alpaca.ini'; ;
 end;
 
 procedure Tpop_encoder.ScaleMainForm;
@@ -1027,6 +1041,7 @@ begin
   Label13.Caption := rsTimeoutMs;
   Label21.Caption := rsIntervalTime;
   Button2.Caption := rsSaveSetting;
+  Button3.Caption := rsSaveSetting;
 end;
 
 procedure Tpop_encoder.AffMsg(msgtxt: string);
@@ -1062,6 +1077,14 @@ begin
   PanelSimulator.Visible:=cbo_type.Text='Simulator';
 end;
 
+procedure Tpop_encoder.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  if port_opened then
+  begin
+    AffMsg('Please disconnect the telescope before to close');
+    canclose := False;
+  end;
+end;
 
 procedure Tpop_encoder.ReadConfig;
 var
@@ -1114,15 +1137,6 @@ begin
   First_Show := False;
 end;
 
-
-procedure Tpop_encoder.kill(Sender: TObject; var CanClose: boolean);
-begin
-  if port_opened then
-  begin
-    canclose := False;
-    hide;
-  end;
-end;
 
 procedure Tpop_encoder.SimulatorXChange(Sender: TObject);
 begin
@@ -1587,6 +1601,11 @@ begin
   ini.writestring('observatory', 'latitude', lat.Text);
   ini.writestring('observatory', 'longitude', long.Text);
   ini.Free;
+  ini := tinifile.Create(AlpacaConfig);
+  ini.WriteString('alpaca', 'ipaddr', IPAddr.Text);
+  ini.WriteString('alpaca', 'ipport', IPPort.Text);
+  ini.UpdateFile;
+  ini.Free;
 end;
 
 procedure Tpop_encoder.ReadIntBoxChange(Sender: TObject);
@@ -1629,7 +1648,7 @@ end;
 
 procedure Tpop_encoder.SpeedButton2Click(Sender: TObject);
 begin
-  Hide;
+  WindowState:=wsMinimized;
 end;
 
 procedure Tpop_encoder.list_initMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1673,6 +1692,7 @@ begin
   GetSerialPorts(sp);
   cbo_port.Items.Assign(sp);
   cbo_port.Text:=buf;
+  PageControl1.ActivePageIndex := 0;
   sp.Free;
 end;
 

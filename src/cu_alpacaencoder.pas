@@ -2,6 +2,27 @@ unit cu_alpacaencoder;
 
 {$mode objfpc}{$H+}
 {$WARN 5024 off : Parameter "$1" not used}
+{
+Copyright (C) 2019 Patrick Chevalley
+
+http://www.ap-i.net
+pch@ap-i.net
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+}
+
 interface
 
 uses  cu_alpacatelescope, cu_alpacadevice, pu_encoderclient, math,
@@ -157,17 +178,23 @@ procedure  T_AlpacaEncoder.SetConnected(value:boolean);
 var ok: boolean;
 begin
   if value then begin
-    TargetRA:=NullCoord;
-    TargetDEC:=NullCoord;
-    pop_encoder.ScopeConnect(ok);
-    FConnected:=ok;
-    if (not ok) then begin
-      FErrorNumber:=ERR_DRIVER_ERROR;
-      FErrorMessage:='Connection error: '+pop_encoder.statusbar1.SimpleText;
+    if pop_encoder.ScopeConnected then begin
+      // try to keep previous alignment if any
+      FConnected:=true;
+    end
+    else begin
+      TargetRA:=NullCoord;
+      TargetDEC:=NullCoord;
+      pop_encoder.ScopeConnect(ok);
+      FConnected:=ok;
+      if (not ok) then begin
+        FErrorNumber:=ERR_DRIVER_ERROR;
+        FErrorMessage:='Connection error: '+pop_encoder.statusbar1.SimpleText;
+      end;
     end;
   end
   else begin
-    pop_encoder.ScopeDisconnect(ok);
+    // do not disconnect the device to not lost the alignment
     FConnected:=false;
   end;
 end;

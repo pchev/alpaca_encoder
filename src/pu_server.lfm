@@ -1,0 +1,22 @@
+object f_server: Tf_server
+  Left = 369
+  Height = 129
+  Top = 30
+  Width = 240
+  Caption = 'Alpaca server'
+  ClientHeight = 129
+  ClientWidth = 240
+  DesignTimePPI = 95
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '2.0.4.0'
+  object PanelTop: TPanel
+    Left = 0
+    Height = 129
+    Top = 0
+    Width = 240
+    Align = alClient
+    Caption = 'Alpaca server'
+    TabOrder = 0
+  end
+end
