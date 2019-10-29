@@ -6,6 +6,7 @@ Makefile.fpc
 Makefile.fpcxxx
 # ignore build dir
 src/lib/
+src/units/
 component/lib/
 component/synapse/source/lib/lib/
 # ignore various files
