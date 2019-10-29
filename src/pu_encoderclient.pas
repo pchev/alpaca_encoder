@@ -159,7 +159,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure query_encoder;
     {Utility and form functions}
-    procedure formcreate(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure SimulatorXChange(Sender: TObject);
     procedure SimulatorYChange(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
@@ -1055,8 +1055,12 @@ begin
   statusbar1.Refresh;
 end;
 
-procedure Tpop_encoder.formcreate(Sender: TObject);
+procedure Tpop_encoder.FormCreate(Sender: TObject);
 begin
+  DefaultFormatSettings.DecimalSeparator := '.';
+  DefaultFormatSettings.ThousandSeparator := ',';
+  DefaultFormatSettings.DateSeparator := '/';
+  DefaultFormatSettings.TimeSeparator := ':';
   GetAppDir;
   ScaleMainForm;
   wait_create := True;

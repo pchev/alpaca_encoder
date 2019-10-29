@@ -149,11 +149,11 @@ object pop_encoder: Tpop_encoder
       end
       object GroupBox1: TGroupBox
         Left = 0
-        Height = 200
+        Height = 192
         Top = 104
         Width = 365
         Align = alClient
-        ClientHeight = 198
+        ClientHeight = 190
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -162,7 +162,7 @@ object pop_encoder: Tpop_encoder
         TabOrder = 2
         object list_init: TListView
           Left = 0
-          Height = 165
+          Height = 157
           Top = 33
           Width = 363
           Align = alClient
@@ -212,11 +212,11 @@ object pop_encoder: Tpop_encoder
       end
       object GroupBox3: TGroupBox
         Left = 0
-        Height = 73
-        Top = 352
+        Height = 81
+        Top = 344
         Width = 365
         Align = alBottom
-        ClientHeight = 71
+        ClientHeight = 79
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -429,7 +429,7 @@ object pop_encoder: Tpop_encoder
       object PanelSimulator: TPanel
         Left = 0
         Height = 48
-        Top = 304
+        Top = 296
         Width = 365
         Align = alBottom
         ClientHeight = 48
@@ -493,7 +493,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Encoder Configuration'
-        ClientHeight = 138
+        ClientHeight = 135
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -652,7 +652,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alClient
         Caption = 'Observatory '
-        ClientHeight = 72
+        ClientHeight = 69
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -718,7 +718,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Mount fabrication error'
-        ClientHeight = 35
+        ClientHeight = 32
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -835,7 +835,7 @@ object pop_encoder: Tpop_encoder
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 2
-          ClientHeight = 45
+          ClientHeight = 42
           ClientWidth = 173
           Columns = 2
           Font.Color = clWindowText
@@ -866,7 +866,7 @@ object pop_encoder: Tpop_encoder
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 2
-          ClientHeight = 45
+          ClientHeight = 42
           ClientWidth = 186
           Columns = 2
           Font.Color = clWindowText
@@ -948,7 +948,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Port Configuration'
-        ClientHeight = 203
+        ClientHeight = 200
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -1251,7 +1251,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Alpaca server setup'
-        ClientHeight = 103
+        ClientHeight = 100
         ClientWidth = 363
         TabOrder = 0
         object IPAddr: TEdit
@@ -1300,7 +1300,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alClient
         Caption = 'Alpaca Server Status'
-        ClientHeight = 249
+        ClientHeight = 246
         ClientWidth = 363
         ParentBidiMode = False
         TabOrder = 1
@@ -1320,8 +1320,8 @@ object pop_encoder: Tpop_encoder
           Top = 0
           Width = 363
           Align = alTop
-          ClientHeight = 32
-          ClientWidth = 363
+          ClientHeight = 28
+          ClientWidth = 359
           TabOrder = 1
           object LabelPort: TLabel
             Left = 8

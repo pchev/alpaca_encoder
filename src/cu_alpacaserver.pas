@@ -201,23 +201,27 @@ begin
     end;
   end
   else begin
+    doc:='400 - Not found.';
+    ShowMsg(doc);
     result:='HTTP/1.0 400' + CRLF
            +'Connection: close' + CRLF
            +'Content-type: text/html; charset=utf-8' + CRLF
            +'Date: ' + Rfc822DateTime(now) + CRLF
            +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
            +'' + CRLF
-           +'Not Found' + CRLF;
+           +doc + CRLF;
   end;
   except
     on E: Exception do begin
+      doc:='500 - '+E.Message;
+      ShowMsg(doc);
       result:='HTTP/1.0 500' + CRLF
              +'Connection: close' + CRLF
              +'Content-type: text/html; charset=utf-8' + CRLF
              +'Date: ' + Rfc822DateTime(now) + CRLF
              +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
              +'' + CRLF
-             +'Unexpected error: '+ E.Message + CRLF;
+             +doc + CRLF;
     end;
   end;
 end;

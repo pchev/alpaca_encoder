@@ -62,10 +62,6 @@ implementation
 
 procedure Tf_server.FormCreate(Sender: TObject);
 begin
-  DefaultFormatSettings.DecimalSeparator := '.';
-  DefaultFormatSettings.ThousandSeparator := ',';
-  DefaultFormatSettings.DateSeparator := '/';
-  DefaultFormatSettings.TimeSeparator := ':';
   GetAppDir;
   ReadConfig;
   pop_encoder.IPAddr.Text:=AlpacaIPAddr;
