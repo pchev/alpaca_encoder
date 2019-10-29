@@ -244,15 +244,16 @@ begin
   if n>=0 then begin
     inc(ServerTransactionID);
     doc:=DeviceList[n].device.ProcessPutRequest(req,arg,ServerTransactionID,httpstatus) + CRLF;
+    ShowMsg(doc);
     if httpstatus=200 then begin
-    result:='HTTP/1.0 200' + CRLF
-           +'Connection: close' + CRLF
-           +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
-           +'Content-type: application/json; charset=utf-8' + CRLF
-           +'Date: ' + Rfc822DateTime(now) + CRLF
-           +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
-           +'' + CRLF
-           +doc;
+      result:='HTTP/1.0 200' + CRLF
+             +'Connection: close' + CRLF
+             +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
+             +'Content-type: application/json; charset=utf-8' + CRLF
+             +'Date: ' + Rfc822DateTime(now) + CRLF
+             +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
+             +'' + CRLF
+             +doc;
     end
     else begin
       result:='HTTP/1.0 '+inttostr(httpstatus) + CRLF
@@ -267,6 +268,7 @@ begin
   end
   else begin
     doc:='400 - Not found.';
+    ShowMsg(doc);
     result:='HTTP/1.0 400' + CRLF
            +'Connection: close' + CRLF
            +'Content-type: text/html; charset=utf-8' + CRLF
@@ -278,6 +280,7 @@ begin
   except
     on E: Exception do begin
       doc:='500 - '+E.Message;
+      ShowMsg(doc);
       result:='HTTP/1.0 500' + CRLF
              +'Connection: close' + CRLF
              +'Content-type: text/html; charset=utf-8' + CRLF
