@@ -164,7 +164,8 @@ var req,doc: string;
     i,p,n,httpstatus: integer;
 begin
   try
-  ShowMsg(HttpRequest);
+  doc:='GET '+HttpRequest;
+  ShowMsg(doc);
   req:=HttpRequest;
   n:=-1;
   for i:=0 to DeviceList.Count-1 do begin
@@ -231,6 +232,8 @@ var req,doc: string;
     i,p,n,httpstatus: integer;
 begin
   try
+  doc:='PUT '+HttpRequest;
+  ShowMsg(doc);
   req:=HttpRequest;
   n:=-1;
   for i:=0 to DeviceList.Count-1 do begin
