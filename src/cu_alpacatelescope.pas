@@ -37,6 +37,8 @@ type
       destructor  Destroy; override;
       function  ProcessGetRequest(req: string; ServerTransactionID:LongWord; out status: integer):string; override;
       function  ProcessPutRequest(req,arg: string; ServerTransactionID:LongWord; out status: integer):string; override;
+      function  ProcessSetup(req: string; out status: integer):string; override;
+      function  GetSetupPage: string; virtual; abstract;
       function  alignmentmode: integer; virtual; abstract;
       function  altitude: double; virtual; abstract;
       function  aperturearea: double; virtual; abstract;
@@ -576,7 +578,28 @@ begin
     result:=FormatEmptyResp(ClientTransactionID,ServerTransactionID,FErrorNumber,FErrorMessage);
   end
   else begin
-    result:='GET - Unknown device method: '+method;
+    result:='PUT - Unknown device method: '+method;
+    status:=400;
+  end;
+  params.Free;
+end;
+
+function  T_AlpacaTelescope.ProcessSetup(req: string; out status: integer):string;
+var method,value: string;
+    ok: boolean;
+    params: TStringlist;
+    i: integer;
+begin
+  params:=TStringlist.Create;
+  DecodeSetupRequest(req,method,params);
+  status:=200;
+  FErrorNumber:=0;
+  FErrorMessage:='';
+  if method='setup' then begin
+    result:=GetSetupPage;
+  end
+  else begin
+    result:='GET - Unknown setup method: '+method;
     status:=400;
   end;
   params.Free;

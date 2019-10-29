@@ -36,6 +36,7 @@ type
       devicenum: integer;
       devicename: string;
       devicepath: string;
+      setuppath: string;
   end;
 
   T_AlpacaDeviceList = class(TObjectList)
@@ -61,6 +62,9 @@ type
       procedure ShowSocket(var msg:string);
       function ProcessGet(HttpRequest: string): string;
       function ProcessPut(HttpRequest,arg: string): string;
+      function ProcessSetup(HttpRequest: string): string;
+      function ProcessManagement(HttpRequest: string): string;
+      function DecodeManagementRequest(req: string; out method: string; var params: TStringlist; out ClientID,ClientTransactionID: Longword):boolean;
     public
       constructor Create(AOwner: TComponent);override;
       destructor  Destroy; override;
@@ -128,7 +132,9 @@ begin
   elem.devicenum:=n;
   elem.devicename:=AlpacaDeviceName[ord(devtype)];
   elem.devicepath:='/api/'+ApiVersion+'/'+elem.devicename+'/'+IntToStr(elem.devicenum)+'/';
+  elem.setuppath:='/setup/'+ApiVersion+'/'+elem.devicename+'/'+IntToStr(elem.devicenum)+'/';
   elem.device.Path:=elem.devicepath;
+  elem.device.SetupPath:=elem.setuppath;
   DeviceList.Add(elem);
 end;
 
@@ -166,51 +172,60 @@ begin
   try
   doc:='GET '+HttpRequest;
   ShowMsg(doc);
-  req:=HttpRequest;
-  n:=-1;
-  for i:=0 to DeviceList.Count-1 do begin
-    p:=pos(DeviceList[i].devicepath,req);
-    if p>0 then begin
-      n:=i;
-      Delete(req,1,p-1);
-      break;
+  if copy(HttpRequest,1,6)='/setup' then begin
+    result:=ProcessSetup(HttpRequest);
+  end
+  else if copy(HttpRequest,1,11)='/management' then begin
+    result:=ProcessManagement(HttpRequest);
+  end
+  else begin
+    req:=HttpRequest;
+    n:=-1;
+    for i:=0 to DeviceList.Count-1 do begin
+      p:=pos(DeviceList[i].devicepath,req);
+      if p>0 then begin
+        n:=i;
+        Delete(req,1,p-1);
+        break;
+      end;
     end;
-  end;
-  if n>=0 then begin
-    inc(ServerTransactionID);
-    doc:=DeviceList[n].device.ProcessGetRequest(req,ServerTransactionID,httpstatus) + CRLF;
-    ShowMsg(doc);
-    if httpstatus=200 then begin
-    result:='HTTP/1.0 200' + CRLF
-           +'Connection: close' + CRLF
-           +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
-           +'Content-type: application/json; charset=utf-8' + CRLF
-           +'Date: ' + Rfc822DateTime(now) + CRLF
-           +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
-           +'' + CRLF
-           +doc;
-    end
-    else begin
-      result:='HTTP/1.0 '+inttostr(httpstatus) + CRLF
+    if n>=0 then begin
+      inc(ServerTransactionID);
+      doc:=DeviceList[n].device.ProcessGetRequest(req,ServerTransactionID,httpstatus) + CRLF;
+      ShowMsg(doc);
+      if httpstatus=200 then begin
+      result:='HTTP/1.0 200' + CRLF
              +'Connection: close' + CRLF
              +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
-             +'Content-type: text/html; charset=utf-8' + CRLF
+             +'Content-type: application/json; charset=utf-8' + CRLF
              +'Date: ' + Rfc822DateTime(now) + CRLF
              +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
              +'' + CRLF
              +doc;
+      end
+      else begin
+        result:='HTTP/1.0 '+inttostr(httpstatus) + CRLF
+               +'Connection: close' + CRLF
+               +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
+               +'Content-type: text/html; charset=utf-8' + CRLF
+               +'Date: ' + Rfc822DateTime(now) + CRLF
+               +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
+               +'' + CRLF
+               +doc;
+      end;
+    end
+    else begin
+      doc:='400 - Not found.';
+      ShowMsg(doc);
+      result:='HTTP/1.0 400' + CRLF
+             +'Connection: close' + CRLF
+             +'Content-type: text/html; charset=utf-8' + CRLF
+             +'Date: ' + Rfc822DateTime(now) + CRLF
+             +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
+             +'' + CRLF
+             +doc + CRLF;
     end;
-  end
-  else begin
-    doc:='400 - Not found.';
-    ShowMsg(doc);
-    result:='HTTP/1.0 400' + CRLF
-           +'Connection: close' + CRLF
-           +'Content-type: text/html; charset=utf-8' + CRLF
-           +'Date: ' + Rfc822DateTime(now) + CRLF
-           +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
-           +'' + CRLF
-           +doc + CRLF;
+
   end;
   except
     on E: Exception do begin
@@ -293,6 +308,186 @@ begin
              +doc + CRLF;
     end;
   end;
+end;
+
+function T_AlpacaServer.ProcessSetup(HttpRequest: string): string;
+var doc,req,setuppath: string;
+    n,i,p,httpstatus: integer;
+begin
+  if HttpRequest='/setup' then begin
+    doc:='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'+
+         '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'+
+         '<title>Alpaca Server</title></head><body text>'+
+         '<H1>Alpaca Server Setup</H1><br/>'+
+         'To setup this Alpaca server you must use the GUI of the main program at the tab Alpaca<br/><br/>'+
+         'You can change the server listen adress and port.<br/>'+
+         'The program must be restarted to apply the changes.'+
+         '</body></html>';
+    result:='HTTP/1.0 200' + CRLF
+           +'Connection: close' + CRLF
+           +'Content-type: text/html; charset=utf-8' + CRLF
+           +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
+           +'Date: ' + Rfc822DateTime(now) + CRLF
+           +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
+           +'' + CRLF
+           +doc;
+  end else begin
+    req:=HttpRequest;
+    n:=-1;
+    for i:=0 to DeviceList.Count-1 do begin
+      p:=pos(DeviceList[i].setuppath,req);
+      if p>0 then begin
+        n:=i;
+        Delete(req,1,p-1);
+        break;
+      end;
+    end;
+    if (n>=0) then begin
+      doc:=DeviceList[n].device.ProcessSetup(req,httpstatus);
+      if httpstatus=200 then begin
+        result:='HTTP/1.0 200' + CRLF
+               +'Connection: close' + CRLF
+               +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
+               +'Content-type: text/html; charset=utf-8' + CRLF
+               +'Date: ' + Rfc822DateTime(now) + CRLF
+               +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
+               +'' + CRLF
+               +doc;
+      end
+      else begin
+        result:='HTTP/1.0 '+inttostr(httpstatus) + CRLF
+               +'Connection: close' + CRLF
+               +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
+               +'Content-type: text/html; charset=utf-8' + CRLF
+               +'Date: ' + Rfc822DateTime(now) + CRLF
+               +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
+               +'' + CRLF
+               +doc;
+      end;
+    end
+    else begin
+      doc:='400 - Not found.';
+      result:='HTTP/1.0 400' + CRLF
+             +'Connection: close' + CRLF
+             +'Content-type: text/html; charset=utf-8' + CRLF
+             +'Date: ' + Rfc822DateTime(now) + CRLF
+             +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
+             +'' + CRLF
+             +doc + CRLF;
+    end;
+  end;
+end;
+
+function T_AlpacaServer.DecodeManagementRequest(req: string; out method: string; var params: TStringlist; out ClientID,ClientTransactionID: Longword):boolean;
+var i,p: integer;
+    buf,MPath:string;
+begin
+result:=false;
+MPath:='/management/';
+buf:=copy(req,1,length(MPath));
+if copy(req,1,length(MPath))<>MPath then exit;
+Delete(req,1,length(MPath));
+p:=pos('?',req);
+if p<=0 then begin
+  method:=req;
+  params.Clear;
+  ClientID:=0;
+  ClientTransactionID:=0;
+end
+else begin
+  method:=copy(req,1,p-1);
+  delete(req,1,p);
+  params.Clear;
+  ClientID:=0;
+  ClientTransactionID:=0;
+  SplitRec(req,'&',params);
+  for i:=0 to params.Count-1 do begin
+    if uppercase(copy(params[i],1,9))='CLIENTID=' then begin
+      buf:=params[i];
+      delete(buf,1,9);
+      ClientID:=StrToIntDef(buf,0);
+      params.Delete(i);
+      break;
+    end;
+  end;
+  for i:=0 to params.Count-1 do begin
+    if uppercase(copy(params[i],1,20))='CLIENTTRANSACTIONID=' then begin
+      buf:=params[i];
+      delete(buf,1,20);
+      ClientTransactionID:=StrToIntDef(buf,0);
+      params.Delete(i);
+      break;
+    end;
+  end;
+end;
+result:=true;
+end;
+
+function T_AlpacaServer.ProcessManagement(HttpRequest: string): string;
+var doc: string;
+    method,value: string;
+    ok: boolean;
+    lst:TStringList;
+    apiversions: array of integer;
+    params: TStringlist;
+    i,status: integer;
+    ClientID,ClientTransactionID:Longword;
+    ErrorNumber: integer;
+    ErrorMessage:string;
+begin
+  params:=TStringlist.Create;
+  DecodeManagementRequest(HttpRequest,method,params,ClientID,ClientTransactionID);
+  status:=400;
+  doc:='400 - Not found.';
+  ErrorNumber:=0;
+  ErrorMessage:='';
+  if method='apiversions' then begin
+    SetLength(apiversions,1);
+    apiversions[0]:=1;
+    doc:=DeviceList[0].device.FormatIntArrayResp(apiversions,ClientTransactionID,ServerTransactionID,ErrorNumber,ErrorMessage);
+    status:=200;
+  end
+  else if method='v1/description' then begin
+    value:='{"ServerName": "ASCOM Alpaca Server - Freepascal-Synapse",'+
+            '"Manufacturer": "Patrick Chevalley",'+
+            '"ManufacturerVersion": "v0.0.1",'+
+            '"Location": "http://www.ap-i.net"}';
+    doc:=DeviceList[0].device.FormatRawResp(value,ClientTransactionID,ServerTransactionID,ErrorNumber,ErrorMessage);
+    status:=200;
+  end
+  else if method='v1/configureddevices' then begin
+    value:='[';
+    for i:=0 to DeviceList.Count-1 do begin
+      value:=value+'{"DeviceName": "'+DeviceList[i].device.Name+'",'+
+                    '"DeviceType": "'+DeviceList[i].devicename+'",'+
+                    '"DeviceNumber": '+IntToStr(DeviceList[i].devicenum)+','+
+                    '"UniqueID": "'+DeviceList[i].device.GetGuid+'"},';
+    end;
+    SetLength(value,Length(value)-1);
+    value:=value+']';
+    doc:=DeviceList[0].device.FormatRawResp(value,ClientTransactionID,ServerTransactionID,ErrorNumber,ErrorMessage);
+    status:=200;
+  end;
+  if status=200 then begin
+    result:='HTTP/1.0 200' + CRLF
+           +'Connection: close' + CRLF
+           +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
+           +'Content-type: application/json; charset=utf-8' + CRLF
+           +'Date: ' + Rfc822DateTime(now) + CRLF
+           +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
+           +'' + CRLF
+           +doc;
+    end
+    else begin
+      result:='HTTP/1.0 '+inttostr(status) + CRLF
+             +'Connection: close' + CRLF
+             +'Content-length: ' + IntTostr(Length(Doc)) + CRLF
+             +'Content-type: text/html; charset=utf-8' + CRLF
+             +'Date: ' + Rfc822DateTime(now) + CRLF
+             +'Server: ASCOM Alpaca Server - Freepascal-Synapse' + CRLF
+             +'' + CRLF
+             +doc;
+    end;
 end;
 
 end.

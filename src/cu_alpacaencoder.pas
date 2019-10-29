@@ -35,6 +35,8 @@ type
     public
       constructor Create(AOwner: TComponent);override;
       destructor  Destroy; override;
+      function  GetGuid: string; override;
+      function  GetSetupPage: string; override;
       function  Action( actionName, actionParameters: string):string; override;
       procedure CommandBlind( command: string;  raw: boolean = false); override;
       function  CommandBool(command: string;  raw: boolean = false):boolean; override;
@@ -132,6 +134,8 @@ type
 
 implementation
 
+const guid='beb20602-8709-48c9-a902-c3870b8f5e6c';
+
 constructor T_AlpacaEncoder.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -140,6 +144,11 @@ end;
 destructor  T_AlpacaEncoder.Destroy;
 begin
   inherited Destroy;
+end;
+
+function  T_AlpacaEncoder.GetGuid: string;
+begin
+  result:=guid;
 end;
 
 function  T_AlpacaEncoder.Action( actionName, actionParameters: string):string;
@@ -221,7 +230,7 @@ end;
 
 function  T_AlpacaEncoder.Name:string;
 begin
-  result:=pop_encoder.DeviceName;
+  result:='Encoder '+pop_encoder.DeviceName;
 end;
 
 function  T_AlpacaEncoder.SupportedActions:TStringList;
@@ -769,6 +778,16 @@ begin
   pop_encoder.ScopeShow;
 end;
 
+function   T_AlpacaEncoder.GetSetupPage: string;
+begin
+  result:='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">'+
+       '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'+
+       '<title>Alpaca Encoder driver</title></head><body text>'+
+       '<H1>Alpaca Encoder driver Setup</H1><br/>'+
+       'To setup this Alpaca driver you must use the GUI of the main program.<br/><br/>'+
+       'See detail with the Help button.<br/>'+
+       '</body></html>';
+end;
 
 end.
 

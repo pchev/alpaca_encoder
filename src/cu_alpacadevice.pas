@@ -74,11 +74,12 @@ type
       FConnected: boolean;
       FErrorNumber: integer;
       FErrorMessage: String;
-      FPath: string;
+      FPath,FSetupPath: string;
     public
       constructor Create(AOwner: TComponent);override;
       destructor  Destroy; override;
       function  FormatEmptyResp(ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
+      function  FormatRawResp(value:string; ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
       function  FormatStringResp(value:string; ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
       function  FormatStringListResp(value:TStringList; ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
       function  FormatBoolResp(value:boolean; ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
@@ -87,12 +88,15 @@ type
       function  FormatFloatResp(value:double; ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
       function  FormatAxisRateResp(value:TAxisRates; ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
       function  DecodeRequest(req: string; out method: string; var params: TStringlist; out ClientID,ClientTransactionID: Longword):boolean;
+      function  DecodeSetupRequest(req: string; out method: string; var params: TStringlist):boolean;
       function  GetParamString(params: Tstringlist; key: string; out value: string):boolean;
       function  GetParamBool(params: Tstringlist; key: string; out value: boolean):boolean;
       function  GetParamFloat(params: Tstringlist; key: string; out value: double):boolean;
       function  GetParamInt(params: Tstringlist; key: string; out value: integer):boolean;
       function  ProcessGetRequest(req: string; ServerTransactionID:LongWord; out status: integer):string; virtual; abstract;
       function  ProcessPutRequest(req,arg: string; ServerTransactionID:LongWord; out status: integer):string; virtual; abstract;
+      function  ProcessSetup(req: string; out status: integer):string; virtual; abstract;
+      function  GetGuid: string; virtual; abstract;
       // Common properties and methods.
       function  Action( actionName, actionParameters: string):string; virtual; abstract;
       procedure CommandBlind( command: string;  raw: boolean = false); virtual; abstract;
@@ -108,6 +112,7 @@ type
       procedure SetupDialog(x:integer=-1;y:integer=-1); virtual; abstract;
       function  SupportedActions:TStringList; virtual; abstract;
       property  Path: string read FPath write FPath;
+      property  SetupPath: string read FSetupPath write FSetupPath;
   end;
 
 procedure SplitRec(buf,sep:string; var arg: TStringList);
@@ -166,6 +171,28 @@ else begin
       break;
     end;
   end;
+end;
+result:=true;
+end;
+
+function T_AlpacaDevice.DecodeSetupRequest(req: string; out method: string; var params: TStringlist):boolean;
+var i,p: integer;
+    buf:string;
+begin
+result:=false;
+buf:=copy(req,1,length(FSetupPath));
+if copy(req,1,length(FSetupPath))<>FSetupPath then exit;
+Delete(req,1,length(FSetupPath));
+p:=pos('?',req);
+if p<=0 then begin
+  method:=req;
+  params.Clear;
+end
+else begin
+  method:=copy(req,1,p-1);
+  delete(req,1,p);
+  params.Clear;
+  SplitRec(req,'&',params);
 end;
 result:=true;
 end;
@@ -249,6 +276,16 @@ function  T_AlpacaDevice.FormatStringResp(value:string; ClientTransactionID, Ser
 begin
   result:='{"Value":'
          +'"'+value+'",'
+         +'"ClientTransactionID":'+inttostr(ClientTransactionID)+','
+         +'"ServerTransactionID":'+inttostr(ServerTransactionID)+','
+         +'"ErrorNumber":'+inttostr(ErrorNumber)+','
+         +'"ErrorMessage":"'+ErrorMessage+'"}'
+end;
+
+function  T_AlpacaDevice.FormatRawResp(value:string; ClientTransactionID, ServerTransactionID: LongWord; ErrorNumber: integer; ErrorMessage:string):string;
+begin
+  result:='{"Value":'
+         +value+','
          +'"ClientTransactionID":'+inttostr(ClientTransactionID)+','
          +'"ServerTransactionID":'+inttostr(ServerTransactionID)+','
          +'"ErrorNumber":'+inttostr(ErrorNumber)+','
