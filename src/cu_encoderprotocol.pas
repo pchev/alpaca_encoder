@@ -99,6 +99,7 @@ var
   Sideral_Time: double;              // Current sideral time
   Longitude: double;                 // Observatory longitude (Negative East of Greenwich}
   Latitude: double;                  // Observatory latitude
+  Altitude: double;                  // Observatory altitude
   Last_p1, Last_p2: PInit_object;    // Last used init star
   XSimulator,YSimulator: integer;    // Simulator position
   XresSimulator,YresSimulator:integer; //Simulator resolution

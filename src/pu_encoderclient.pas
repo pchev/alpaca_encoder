@@ -216,8 +216,10 @@ type
     function DEmToStr(de: double): string;
     function GetLatitude: double;
     function GetLongitude: double;
+    function GetAltitude: double;
     procedure SetLatitude(value: double);
     procedure SetLongitude(value: double);
+    procedure SetAltitude(value: double);
     function GetUTCDate: string;
     function GetDeviceName: string;
     function GetAlignmentMode: integer;
@@ -253,6 +255,7 @@ type
     property  UTCDate:string read GetUTCDate;
     property  SiteLatitude: double read GetLatitude write SetLatitude;
     property  SiteLongitude: double read GetLongitude write SetLongitude;
+    property  SiteAltitude: double read GetAltitude write SetAltitude;
     property  DeviceName:string read GetDeviceName;
     property  AlignmentMode: integer read GetAlignmentMode;
   end;
@@ -622,14 +625,26 @@ begin
   result:=Longitude;
 end;
 
+function Tpop_encoder.GetAltitude: double;
+begin
+  result:=Altitude;
+end;
+
 procedure Tpop_encoder.SetLatitude(value: double);
 begin
   Latitude:=value;
+  lat.Text := floattostr(value);
 end;
 
 procedure Tpop_encoder.SetLongitude(value: double);
 begin
   Longitude:=value;
+  long.Text := floattostr(value);
+end;
+
+procedure Tpop_encoder.SetAltitude(value: double);
+begin
+  Altitude:=value;
 end;
 
 function Tpop_encoder.ScopeGetEqSys: integer;

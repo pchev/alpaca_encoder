@@ -469,15 +469,17 @@ end;
 
 function  T_AlpacaEncoder.siteelevation: double;
 begin
-  FErrorNumber:=ERR_NOT_IMPLEMENTED;
-  FErrorMessage:=MSG_NOT_IMPLEMENTED;
-  result:=0;
+  result:=pop_encoder.SiteAltitude;
 end;
 
 procedure T_AlpacaEncoder.setsiteelevation(value: double);
 begin
-  FErrorNumber:=ERR_NOT_IMPLEMENTED;
-  FErrorMessage:=MSG_NOT_IMPLEMENTED;
+  if (value>=-300)and(value<=10000) then
+     pop_encoder.SiteAltitude:=value
+  else begin
+    FErrorNumber:=ERR_INVALID_VALUE;
+    FErrorMessage:=MSG_INVALID_VALUE +' siteelevation='+ FormatFloat('0.000',value);
+  end;
 end;
 
 function  T_AlpacaEncoder.sitelatitude: double;
