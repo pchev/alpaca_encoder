@@ -349,8 +349,20 @@ const
   ldeg = 'd';
   lmin = 'm';
   lsec = 's';
-  DefaultSerialPort = '/dev/ttyUSB0';
   dateiso = 'yyyy"-"mm"-"dd"T"hh":"nn":"ss.zzz';
+{$ifdef linux}
+  DefaultSerialPort = '/dev/ttyUSB0';
+{$endif}
+{$ifdef freebsd}
+  DefaultSerialPort = '/dev/cuau0';
+{$endif}
+{$ifdef windows}
+  DefaultSerialPort = 'COM1';
+{$endif}
+{$ifdef darwin}
+  DefaultSerialPort = '/dev/cu.serial1';
+{$endif}
+
 
 function Slash(nom : string) : string;
 begin
@@ -504,7 +516,7 @@ begin
       if not DirectoryExists(slash(Appdir)+slash('doc')) then
       begin
          // try default location
-        Appdir := '/Applications/CCDciel';
+        Appdir := '/Applications/AlpacaEncoder';
       end;
     end;
   {$else}
@@ -549,12 +561,12 @@ begin
                   appdir:=buf
             else begin
                 // try in C:\Program Files
-                buf:='C:\Program Files\CCDciel';
+                buf:='C:\Program Files\Alpaca_Encoder';
                 if (directoryexists(slash(buf)+slash('doc'))) then
                    appdir:=buf
             else begin
                // try in C:\Program Files (x86)
-               buf:='C:\Program Files (x86)\CCDciel';
+               buf:='C:\Program Files (x86)\Alpaca_Encoder';
                if (directoryexists(slash(buf)+slash('doc'))) then
                   appdir:=buf
 

@@ -146,7 +146,7 @@ function GetSerialPorts(var c: TStringList): boolean;
     l := TStringList.Create;
     reg := TRegistry.Create;
     reg.RootKey := HKEY_LOCAL_MACHINE;
-    reg.OpenKey('\HARDWARE\DEVICEMAP\SERIALCOMM', False);
+    reg.OpenKeyReadOnly('\HARDWARE\DEVICEMAP\SERIALCOMM');
     reg.GetValueNames(l);
     for n := 0 to l.Count - 1 do
       p.Add(reg.ReadString(l[n]));
