@@ -54,7 +54,7 @@ if [[ $make_linuxarm ]]; then
   rsync -a --exclude=.svn packages/Linux/debian $builddir
   cd $builddir
   mkdir debian/alpaca-encoderarm/usr/
-  mv bin debianalpaca-encoderarm/usr/
+  mv bin debian/alpaca-encoderarm/usr/
   mv share debian/alpaca-encoderarm/usr/
   cd debian
   sz=$(du -s alpaca-encoderarm/usr | cut -f1)
