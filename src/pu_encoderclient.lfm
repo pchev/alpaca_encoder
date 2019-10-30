@@ -16,7 +16,6 @@ object pop_encoder: Tpop_encoder
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poDefaultPosOnly
-  LCLVersion = '2.0.4.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 453
@@ -32,7 +31,7 @@ object pop_encoder: Tpop_encoder
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Coordinates'
-      ClientHeight = 419
+      ClientHeight = 425
       ClientWidth = 365
       Font.Color = clWindowText
       Font.Height = -11
@@ -480,7 +479,7 @@ object pop_encoder: Tpop_encoder
     end
     object TabSheet2: TTabSheet
       Caption = 'Encoder Configuration'
-      ClientHeight = 419
+      ClientHeight = 425
       ClientWidth = 365
       Font.Color = clWindowText
       Font.Height = -11
@@ -494,7 +493,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Encoder Configuration'
-        ClientHeight = 135
+        ClientHeight = 138
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -653,7 +652,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alClient
         Caption = 'Observatory '
-        ClientHeight = 69
+        ClientHeight = 72
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -719,7 +718,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Mount fabrication error'
-        ClientHeight = 32
+        ClientHeight = 35
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -836,7 +835,7 @@ object pop_encoder: Tpop_encoder
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 2
-          ClientHeight = 42
+          ClientHeight = 45
           ClientWidth = 173
           Columns = 2
           Font.Color = clWindowText
@@ -867,7 +866,7 @@ object pop_encoder: Tpop_encoder
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 2
-          ClientHeight = 42
+          ClientHeight = 45
           ClientWidth = 186
           Columns = 2
           Font.Color = clWindowText
@@ -892,19 +891,6 @@ object pop_encoder: Tpop_encoder
         ClientHeight = 65
         ClientWidth = 365
         TabOrder = 4
-        object CheckBoxAlwaysVisible: TCheckBox
-          Left = 224
-          Height = 21
-          Top = 4
-          Width = 126
-          Caption = 'Form always visible'
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'MS Sans Serif'
-          OnClick = CheckBoxAlwaysVisibleClick
-          ParentFont = False
-          TabOrder = 0
-        end
         object CheckBoxTrace: TCheckBox
           Left = 8
           Height = 21
@@ -916,7 +902,7 @@ object pop_encoder: Tpop_encoder
           Font.Name = 'MS Sans Serif'
           OnClick = CheckBoxTraceClick
           ParentFont = False
-          TabOrder = 1
+          TabOrder = 0
         end
         object SaveButton1: TButton
           Left = 224
@@ -929,7 +915,7 @@ object pop_encoder: Tpop_encoder
           Font.Name = 'MS Sans Serif'
           OnClick = SaveButton1Click
           ParentFont = False
-          TabOrder = 2
+          TabOrder = 1
         end
         object CheckBoxUnattended: TCheckBox
           Left = 8
@@ -937,13 +923,13 @@ object pop_encoder: Tpop_encoder
           Top = 4
           Width = 184
           Caption = 'Allow unattended initialization'
-          TabOrder = 3
+          TabOrder = 2
         end
       end
     end
     object TabSheet3: TTabSheet
       Caption = 'Serial Port'
-      ClientHeight = 419
+      ClientHeight = 425
       ClientWidth = 365
       Font.Color = clWindowText
       Font.Height = -11
@@ -1251,7 +1237,7 @@ object pop_encoder: Tpop_encoder
     end
     object TabSheet4: TTabSheet
       Caption = 'Alpaca'
-      ClientHeight = 419
+      ClientHeight = 425
       ClientWidth = 365
       object GroupBox6: TGroupBox
         Left = 0

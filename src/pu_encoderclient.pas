@@ -153,7 +153,6 @@ type
     InitType: TRadioGroup;
     CheckBoxTrace: TCheckBox;
     SpeedButton6: TSpeedButton;
-    CheckBoxAlwaysVisible: TCheckBox;
     Z3T: TFloatSpinEdit;
     {Ouranos compatible IO}
     procedure cbo_typeChange(Sender: TObject);
@@ -187,7 +186,6 @@ type
     procedure InitTypeClick(Sender: TObject);
     procedure CheckBoxTraceClick(Sender: TObject);
     procedure SpeedButton6Click(Sender: TObject);
-    procedure CheckBoxAlwaysVisibleClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -305,7 +303,6 @@ const
   rsAltAz = 'Alt-Az';
   rsMountFabrica = 'Mount fabrication error';
   rsRecordProtoc = 'Record protocol to a trace file';
-  rsFormAlwaysVi = 'Form always visible';
   rsSaveSetting = 'Save setting';
   rsPortConfigur = 'Port Configuration';
   rsSerialPort = 'Serial Port';
@@ -1163,7 +1160,6 @@ begin
   Label15.Caption := rsLatitude;
   Label16.Caption := rsLongitude;
   CheckBoxTrace.Caption := rsRecordProtoc;
-  CheckBoxAlwaysVisible.Caption := rsFormAlwaysVi;
   SaveButton1.Caption := rsSaveSetting;
   TabSheet3.Caption := rsPortConfigur;
   GroupBox4.Caption := rsPortConfigur;
@@ -1250,7 +1246,6 @@ begin
   Z1T.Text := ini.Readstring('encoders', 'mount_Z1', '0');
   Z2T.Text := ini.Readstring('encoders', 'mount_Z2', '0');
   Z3T.Text := ini.Readstring('encoders', 'mount_Z3', '0');
-  CheckBoxAlwaysVisible.Checked := ini.ReadBool('encoders', 'AlwaysVisible', True);
   CheckBoxUnattended.Checked := ini.ReadBool('encoders', 'Unattended', False);
   ini.Free;
   with list_init do
@@ -1346,11 +1341,7 @@ var txt:string;
 begin
   Affmsg('');
   txt:=ScopeGetStatus;
-  if CheckBoxAlwaysVisible.Checked then
-    formstyle := fsNormal;
   messagedlg(txt, mtInformation, [mbOK], 0);
-  if CheckBoxAlwaysVisible.Checked then
-    formstyle := fsStayOnTop;
 end;
 
 procedure Tpop_encoder.ShowCoordinates;
@@ -1753,7 +1744,6 @@ begin
   ini.writestring('encoders', 'stopbits', StopbitBox.Text);
   ini.writestring('encoders', 'timeout', TimeOutBox.Text);
   ini.writestring('encoders', 'inttimeout', IntTimeOutBox.Text);
-  ini.writebool('encoders', 'AlwaysVisible', CheckBoxAlwaysVisible.Checked);
   ini.writebool('encoders', 'Unattended', CheckBoxUnattended.Checked);
   ini.writestring('observatory', 'latitude', lat.Text);
   ini.writestring('observatory', 'longitude', long.Text);
@@ -1898,16 +1888,6 @@ begin
   begin
     CloseSerialDebug;
   end;
-end;
-
-procedure Tpop_encoder.CheckBoxAlwaysVisibleClick(Sender: TObject);
-begin
-  if first_show then
-    exit;
-  if CheckBoxAlwaysVisible.Checked then
-    FormStyle := fsStayOnTop
-  else
-    FormStyle := fsNormal;
 end;
 
 {$ifdef mswindows}
