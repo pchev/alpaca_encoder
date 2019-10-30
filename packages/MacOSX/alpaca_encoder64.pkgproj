@@ -21,7 +21,7 @@
 								<key>GID</key>
 								<integer>80</integer>
 								<key>PATH</key>
-								<string>alpaca_encoder</string>
+								<string>AlpacaEncoder</string>
 								<key>PATH_TYPE</key>
 								<integer>1</integer>
 								<key>PERMISSIONS</key>
