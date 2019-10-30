@@ -12,6 +12,7 @@ component/lib/
 component/synapse/source/lib/lib/
 # ignore various files
 src/*.lps
+doc/alpaca_encoder.wiki
 # ignore binary
 *.o
 src/alpaca_encoder
