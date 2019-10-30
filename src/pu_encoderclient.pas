@@ -47,6 +47,7 @@ type
 
   Tpop_encoder = class(TForm)
     Button3: TButton;
+    CheckBoxUnattended: TCheckBox;
     GroupBox6: TGroupBox;
     GroupBox8: TGroupBox;
     IPAddr: TEdit;
@@ -150,9 +151,9 @@ type
     init90: TSpeedButton;
     status: TSpeedButton;
     InitType: TRadioGroup;
-    CheckBox3: TCheckBox;
+    CheckBoxTrace: TCheckBox;
     SpeedButton6: TSpeedButton;
-    CheckBox4: TCheckBox;
+    CheckBoxAlwaysVisible: TCheckBox;
     Z3T: TFloatSpinEdit;
     {Ouranos compatible IO}
     procedure cbo_typeChange(Sender: TObject);
@@ -184,9 +185,9 @@ type
     procedure FormShow(Sender: TObject);
     procedure init90Click(Sender: TObject);
     procedure InitTypeClick(Sender: TObject);
-    procedure CheckBox3Click(Sender: TObject);
+    procedure CheckBoxTraceClick(Sender: TObject);
     procedure SpeedButton6Click(Sender: TObject);
-    procedure CheckBox4Click(Sender: TObject);
+    procedure CheckBoxAlwaysVisibleClick(Sender: TObject);
 
   private
     { Private declarations }
@@ -252,6 +253,7 @@ type
     function ScopeConnected: boolean;
     procedure ScopeClose;
     function  ScopeGetEqSys:integer;
+    function  doInit90:string;
     property  UTCDate:string read GetUTCDate;
     property  SiteLatitude: double read GetLatitude write SetLatitude;
     property  SiteLongitude: double read GetLongitude write SetLongitude;
@@ -1147,8 +1149,8 @@ begin
   GroupBox5.Caption := rsObservatory;
   Label15.Caption := rsLatitude;
   Label16.Caption := rsLongitude;
-  CheckBox3.Caption := rsRecordProtoc;
-  CheckBox4.Caption := rsFormAlwaysVi;
+  CheckBoxTrace.Caption := rsRecordProtoc;
+  CheckBoxAlwaysVisible.Caption := rsFormAlwaysVi;
   SaveButton1.Caption := rsSaveSetting;
   TabSheet3.Caption := rsPortConfigur;
   GroupBox4.Caption := rsPortConfigur;
@@ -1235,7 +1237,8 @@ begin
   Z1T.Text := ini.Readstring('encoders', 'mount_Z1', '0');
   Z2T.Text := ini.Readstring('encoders', 'mount_Z2', '0');
   Z3T.Text := ini.Readstring('encoders', 'mount_Z3', '0');
-  Checkbox4.Checked := ini.ReadBool('encoders', 'AlwaysVisible', True);
+  CheckBoxAlwaysVisible.Checked := ini.ReadBool('encoders', 'AlwaysVisible', True);
+  CheckBoxUnattended.Checked := ini.ReadBool('encoders', 'Unattended', False);
   ini.Free;
   with list_init do
   begin
@@ -1330,10 +1333,10 @@ var txt:string;
 begin
   Affmsg('');
   txt:=ScopeGetStatus;
-  if checkbox4.Checked then
+  if CheckBoxAlwaysVisible.Checked then
     formstyle := fsNormal;
   messagedlg(txt, mtInformation, [mbOK], 0);
-  if checkbox4.Checked then
+  if CheckBoxAlwaysVisible.Checked then
     formstyle := fsStayOnTop;
 end;
 
@@ -1737,7 +1740,8 @@ begin
   ini.writestring('encoders', 'stopbits', StopbitBox.Text);
   ini.writestring('encoders', 'timeout', TimeOutBox.Text);
   ini.writestring('encoders', 'inttimeout', IntTimeOutBox.Text);
-  ini.writebool('encoders', 'AlwaysVisible', checkbox4.Checked);
+  ini.writebool('encoders', 'AlwaysVisible', CheckBoxAlwaysVisible.Checked);
+  ini.writebool('encoders', 'Unattended', CheckBoxUnattended.Checked);
   ini.writestring('observatory', 'latitude', lat.Text);
   ini.writestring('observatory', 'longitude', long.Text);
   ini.Free;
@@ -1836,16 +1840,18 @@ begin
   sp.Free;
 end;
 
-procedure Tpop_encoder.init90Click(Sender: TObject);
+function Tpop_encoder.doInit90:string;
 var
   msg: string;
 begin
+  result:='';
   if led1.color = clLime then
   begin
     {be sure we have the current steps}
     if not timer1.Enabled then
       if not Encoder_query(curstep_x, curstep_y, msg) then
       begin
+        result:=msg;
         AffMsg(msg);
         Encoder_Error;
         exit;
@@ -1853,6 +1859,11 @@ begin
     Init90Y := curstep_y;
     led2.Color:=clLime;
   end;
+end;
+
+procedure Tpop_encoder.init90Click(Sender: TObject);
+begin
+  doInit90;
 end;
 
 procedure Tpop_encoder.InitTypeClick(Sender: TObject);
@@ -1863,9 +1874,9 @@ begin
   end;
 end;
 
-procedure Tpop_encoder.CheckBox3Click(Sender: TObject);
+procedure Tpop_encoder.CheckBoxTraceClick(Sender: TObject);
 begin
-  if CheckBox3.Checked then
+  if CheckBoxTrace.Checked then
   begin
     Initserialdebug(slash(ConfigDir)+'encoder_trace.txt');
     debug := True;
@@ -1876,11 +1887,11 @@ begin
   end;
 end;
 
-procedure Tpop_encoder.CheckBox4Click(Sender: TObject);
+procedure Tpop_encoder.CheckBoxAlwaysVisibleClick(Sender: TObject);
 begin
   if first_show then
     exit;
-  if checkbox4.Checked then
+  if CheckBoxAlwaysVisible.Checked then
     FormStyle := fsStayOnTop
   else
     FormStyle := fsNormal;

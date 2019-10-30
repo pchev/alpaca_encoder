@@ -21,13 +21,13 @@ object pop_encoder: Tpop_encoder
     Height = 453
     Top = 0
     Width = 375
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
     Font.Color = clWindowText
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     ParentFont = False
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Coordinates'
@@ -153,7 +153,7 @@ object pop_encoder: Tpop_encoder
         Top = 104
         Width = 365
         Align = alClient
-        ClientHeight = 190
+        ClientHeight = 172
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -181,8 +181,8 @@ object pop_encoder: Tpop_encoder
           Top = 0
           Width = 363
           Align = alTop
-          ClientHeight = 33
-          ClientWidth = 363
+          ClientHeight = 29
+          ClientWidth = 359
           TabOrder = 1
           object Label1: TLabel
             Left = 4
@@ -216,7 +216,7 @@ object pop_encoder: Tpop_encoder
         Top = 344
         Width = 365
         Align = alBottom
-        ClientHeight = 79
+        ClientHeight = 61
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -493,7 +493,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Encoder Configuration'
-        ClientHeight = 135
+        ClientHeight = 138
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -652,7 +652,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alClient
         Caption = 'Observatory '
-        ClientHeight = 69
+        ClientHeight = 72
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -718,7 +718,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Mount fabrication error'
-        ClientHeight = 32
+        ClientHeight = 35
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -835,7 +835,7 @@ object pop_encoder: Tpop_encoder
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 2
-          ClientHeight = 42
+          ClientHeight = 45
           ClientWidth = 173
           Columns = 2
           Font.Color = clWindowText
@@ -866,7 +866,7 @@ object pop_encoder: Tpop_encoder
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 2
-          ClientHeight = 42
+          ClientHeight = 45
           ClientWidth = 186
           Columns = 2
           Font.Color = clWindowText
@@ -891,36 +891,36 @@ object pop_encoder: Tpop_encoder
         ClientHeight = 65
         ClientWidth = 365
         TabOrder = 4
-        object CheckBox4: TCheckBox
-          Left = 8
+        object CheckBoxAlwaysVisible: TCheckBox
+          Left = 224
           Height = 21
-          Top = 32
+          Top = 4
           Width = 126
           Caption = 'Form always visible'
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
-          OnClick = CheckBox4Click
+          OnClick = CheckBoxAlwaysVisibleClick
           ParentFont = False
           TabOrder = 0
         end
-        object CheckBox3: TCheckBox
+        object CheckBoxTrace: TCheckBox
           Left = 8
           Height = 21
-          Top = 8
+          Top = 32
           Width = 180
           Caption = 'Record protocol to a trace file'
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
-          OnClick = CheckBox3Click
+          OnClick = CheckBoxTraceClick
           ParentFont = False
           TabOrder = 1
         end
         object SaveButton1: TButton
           Left = 224
           Height = 25
-          Top = 28
+          Top = 32
           Width = 124
           Caption = 'Save Setting'
           Font.Color = clWindowText
@@ -929,6 +929,14 @@ object pop_encoder: Tpop_encoder
           OnClick = SaveButton1Click
           ParentFont = False
           TabOrder = 2
+        end
+        object CheckBoxUnattended: TCheckBox
+          Left = 8
+          Height = 21
+          Top = 4
+          Width = 184
+          Caption = 'Allow unattended initialization'
+          TabOrder = 3
         end
       end
     end
@@ -1228,7 +1236,7 @@ object pop_encoder: Tpop_encoder
         object Button2: TButton
           Left = 224
           Height = 25
-          Top = 36
+          Top = 40
           Width = 124
           Caption = 'Save Setting'
           Font.Color = clWindowText
@@ -1353,7 +1361,7 @@ object pop_encoder: Tpop_encoder
         object Button3: TButton
           Left = 224
           Height = 25
-          Top = 2
+          Top = 6
           Width = 124
           Caption = 'Save Setting'
           Font.Color = clWindowText

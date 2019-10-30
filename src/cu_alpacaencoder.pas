@@ -185,6 +185,7 @@ end;
 
 procedure  T_AlpacaEncoder.SetConnected(value:boolean);
 var ok: boolean;
+    txt:string;
 begin
   if value then begin
     if pop_encoder.ScopeConnected then begin
@@ -192,19 +193,38 @@ begin
       FConnected:=true;
     end
     else begin
+      txt:='';
       TargetRA:=NullCoord;
       TargetDEC:=NullCoord;
       pop_encoder.ScopeConnect(ok);
       FConnected:=ok;
-      if (not ok) then begin
+      if ok then begin
+        if pop_encoder.CheckBoxUnattended.Checked then begin
+          txt:=pop_encoder.doInit90;
+          if txt<>'' then begin
+            FErrorNumber:=ERR_DRIVER_ERROR;
+            FErrorMessage:=txt;
+          end;
+        end;
+      end
+      else begin
         FErrorNumber:=ERR_DRIVER_ERROR;
         FErrorMessage:='Connection error: '+pop_encoder.statusbar1.SimpleText;
       end;
     end;
   end
   else begin
-    // do not disconnect the device to not lost the alignment
-    FConnected:=false;
+    if pop_encoder.CheckBoxUnattended.Checked then begin
+      pop_encoder.ScopeDisconnect(ok);
+      if not ok then begin
+        FErrorNumber:=ERR_DRIVER_ERROR;
+        FErrorMessage:='Disconnect error';
+      end;
+    end
+    else begin
+      // if not unattended do not disconnect the device to not lost the alignment
+      FConnected:=false;
+    end;
   end;
 end;
 
