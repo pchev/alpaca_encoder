@@ -2,8 +2,8 @@
 Copyright: 2019 Patrick Chevalley <pch@ap-i.net>
 
 Information :
-Name        : alpaca_encoder
-Version     : 0.1.0
+Name        : alpaca-encoder
+Version     : 4.0.0
 Release     : 1
 Group       : Sciences/Astronomy
 License     : GPL-2+

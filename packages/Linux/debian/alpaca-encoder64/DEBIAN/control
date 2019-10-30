@@ -1,9 +1,9 @@
-Package: alpaca_encoder
+Package: alpaca-encoder
 Version: 0
 Section: education
 Priority: optional
 Maintainer: Patrick Chevalley <pch@ap-i.net>
-Architecture: arm64
+Architecture: amd64
 Installed-Size: %size%
 Depends: libc6, libx11-6, libgtk2.0-0, libglib2.0-0, libpango1.0-0
 Recommends: 

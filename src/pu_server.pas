@@ -119,7 +119,7 @@ var
 begin
   ini := tinifile.Create(Configfile);
   AlpacaIPAddr := ini.ReadString('alpaca', 'ipaddr', '0.0.0.0');
-  AlpacaIPPort := ini.ReadString('alpaca', 'ipport', '22222');
+  AlpacaIPPort := ini.ReadString('alpaca', 'ipport', '11122');
   ini.Free;
 end;
 

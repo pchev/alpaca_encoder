@@ -266,6 +266,7 @@ var
   pop_encoder: Tpop_encoder;
 
 const
+  encoder_version = '4.0.0';
   deg2rad = pi / 180;
   rad2deg = 180 / pi;
   pi2 = 2 * pi;

@@ -240,7 +240,7 @@ end;
 
 function  T_AlpacaEncoder.DriverVersion:string;
 begin
-  result:='0.0.1';
+  result:=pu_encoderclient.encoder_version;
 end;
 
 function  T_AlpacaEncoder.InterfaceVersion: integer;

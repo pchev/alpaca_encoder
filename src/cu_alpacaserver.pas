@@ -78,6 +78,9 @@ type
       property onPortMsg: TStringProc read FPortMsg write FPortMsg;
   end;
 
+  const
+    server_version='1.0.0';
+
 implementation
 
 //////////////////////// T_AlpacaDeviceList ////////////////////////
@@ -97,7 +100,7 @@ constructor T_AlpacaServer.Create(AOwner: TComponent);
 begin
   inherited Create(aOwner);
   FIPAddr := '0.0.0.0';
-  FIPPort := '22222';
+  FIPPort := '11122';
   DefaultFormatSettings.DecimalSeparator := '.';
   DefaultFormatSettings.ThousandSeparator := ',';
   DefaultFormatSettings.DateSeparator := '/';
@@ -448,7 +451,7 @@ begin
   else if method='v1/description' then begin
     value:='{"ServerName": "ASCOM Alpaca Server - Freepascal-Synapse",'+
             '"Manufacturer": "Patrick Chevalley",'+
-            '"ManufacturerVersion": "v0.0.1",'+
+            '"ManufacturerVersion": "v'+server_version+'",'+
             '"Location": "http://www.ap-i.net"}';
     doc:=DeviceList[0].device.FormatRawResp(value,ClientTransactionID,ServerTransactionID,ErrorNumber,ErrorMessage);
     status:=200;

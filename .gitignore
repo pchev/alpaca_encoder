@@ -16,7 +16,7 @@ src/*.lps
 src/alpaca_encoder
 src/alpaca_encoder.exe
 alpaca_encoder*.rpm
-alpaca_encoder*.deb
+alpaca-encoder*.deb
 alpaca_encoder*.exe
 alpaca_encoder*.zip
 alpaca_encoder*.tar.xz

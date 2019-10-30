@@ -16,6 +16,7 @@ object pop_encoder: Tpop_encoder
   OnDestroy = FormDestroy
   OnShow = FormShow
   Position = poDefaultPosOnly
+  LCLVersion = '2.0.4.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 453
@@ -31,7 +32,7 @@ object pop_encoder: Tpop_encoder
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Coordinates'
-      ClientHeight = 425
+      ClientHeight = 419
       ClientWidth = 365
       Font.Color = clWindowText
       Font.Height = -11
@@ -479,7 +480,7 @@ object pop_encoder: Tpop_encoder
     end
     object TabSheet2: TTabSheet
       Caption = 'Encoder Configuration'
-      ClientHeight = 425
+      ClientHeight = 419
       ClientWidth = 365
       Font.Color = clWindowText
       Font.Height = -11
@@ -493,7 +494,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Encoder Configuration'
-        ClientHeight = 138
+        ClientHeight = 135
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -652,7 +653,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alClient
         Caption = 'Observatory '
-        ClientHeight = 72
+        ClientHeight = 69
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -718,7 +719,7 @@ object pop_encoder: Tpop_encoder
         Width = 365
         Align = alTop
         Caption = 'Mount fabrication error'
-        ClientHeight = 35
+        ClientHeight = 32
         ClientWidth = 363
         Font.Color = clWindowText
         Font.Height = -11
@@ -835,7 +836,7 @@ object pop_encoder: Tpop_encoder
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 2
-          ClientHeight = 45
+          ClientHeight = 42
           ClientWidth = 173
           Columns = 2
           Font.Color = clWindowText
@@ -866,7 +867,7 @@ object pop_encoder: Tpop_encoder
           ChildSizing.ShrinkVertical = crsScaleChilds
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 2
-          ClientHeight = 45
+          ClientHeight = 42
           ClientWidth = 186
           Columns = 2
           Font.Color = clWindowText
@@ -942,7 +943,7 @@ object pop_encoder: Tpop_encoder
     end
     object TabSheet3: TTabSheet
       Caption = 'Serial Port'
-      ClientHeight = 425
+      ClientHeight = 419
       ClientWidth = 365
       Font.Color = clWindowText
       Font.Height = -11
@@ -1250,7 +1251,7 @@ object pop_encoder: Tpop_encoder
     end
     object TabSheet4: TTabSheet
       Caption = 'Alpaca'
-      ClientHeight = 425
+      ClientHeight = 419
       ClientWidth = 365
       object GroupBox6: TGroupBox
         Left = 0
