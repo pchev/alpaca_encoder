@@ -1398,9 +1398,14 @@ end;
 
 procedure Tpop_encoder.setresClick(Sender: TObject);
 begin
-  SetRes;
-  Alpha_Inversion := False;
-  Delta_Inversion := False;
+ if port_opened then begin
+   AffMsg('Already connected!');
+ end
+ else begin
+   SetRes;
+   Alpha_Inversion := False;
+   Delta_Inversion := False;
+ end;
 end;
 
 procedure Tpop_encoder.SetRes;
@@ -1848,6 +1853,12 @@ var
   msg: string;
 begin
   result:='';
+  if init_objects.Count>0 then begin
+    msg:='Cannot initialize now, clear initialization list first.';
+    AffMsg(msg);
+    Encoder_Error;
+    exit;
+  end;
   if led1.color = clLime then
   begin
     {be sure we have the current steps}
