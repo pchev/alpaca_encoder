@@ -815,7 +815,6 @@ object pop_encoder: Tpop_encoder
         Top = 155
         Width = 365
         Align = alTop
-        Caption = 'Panel4'
         ClientHeight = 64
         ClientWidth = 365
         TabOrder = 3
