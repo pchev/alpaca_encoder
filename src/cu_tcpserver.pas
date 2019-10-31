@@ -166,10 +166,6 @@ begin
       if lasterror <> 0 then
         Synchronize(@ShowError);
       MaxLineLength := 1024;
-      //writetrace('setlinger');
-      setLinger(True, 1000);
-      if lasterror <> 0 then
-        Synchronize(@ShowError);
       //writetrace('bind to '+fipaddr+' '+fipport);
       bind(FIPaddr, FIPport);
       if lasterror <> 0 then
