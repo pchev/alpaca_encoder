@@ -1201,7 +1201,7 @@ object pop_encoder: Tpop_encoder
           Align = alClient
           Alignment = taCenter
           AutoSize = False
-          Caption = 'Interface for Tangent like system.'#13#10'Will work with all systems using same protocol'#13#10'(Ouranos, NGC MAX,MicroGuider,..)'#13#10'PJ Pallez Nov 1999'#13#10'P. Chevalley 2001, 2011'#10'Alpaca driver P. Chevalley 2019'#13#10'Version 4.0'
+          Caption = 'Interface for Tangent like system.'#13#10'Will work with all systems using same protocol'#13#10'(Ouranos, NGC MAX,MicroGuider,..)'#13#10'PJ Pallez Nov 1999'#13#10'P. Chevalley 2001, 2011'#10'Alpaca driver P. Chevalley 2019'
           Font.Color = clWindowText
           Font.Height = -11
           Font.Name = 'MS Sans Serif'

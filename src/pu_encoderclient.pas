@@ -264,7 +264,7 @@ var
   pop_encoder: Tpop_encoder;
 
 const
-  encoder_version = '4.0.1';
+  encoder_version = '4.0.2';
   deg2rad = pi / 180;
   rad2deg = 180 / pi;
   pi2 = 2 * pi;
@@ -1199,6 +1199,7 @@ begin
   init_objects := TList.Create;
   wait_create := False;
   ReadConfig;
+  label17.Caption:=label17.Caption+#13#10+'Version: '+encoder_version;
 end;
 
 procedure Tpop_encoder.FormDestroy(Sender: TObject);
