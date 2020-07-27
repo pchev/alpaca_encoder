@@ -166,8 +166,10 @@ begin
       if lasterror <> 0 then
         Synchronize(@ShowError);
       MaxLineLength := 1024;
+      {$ifdef linux}
       //writetrace('setlinger');
       setLinger(True, 0);
+      {$endif}
       if lasterror <> 0 then
         Synchronize(@ShowError);
       //writetrace('bind to '+fipaddr+' '+fipport);
