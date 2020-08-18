@@ -9,7 +9,8 @@ name=components
 version=0.0
 
 [target]
-dirs=synapse/source/lib
+dirs=synapse/source/lib \
+     alpacaserver
 
 units=components.pas
 
@@ -60,5 +61,5 @@ export LCL_PLATFORM
 outdir:
 	mkdir -p lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM)
 
-all: outdir synapse/source/lib_all components$(PPUEXT)
+all: outdir synapse/source/lib_all alpacaserver_all components$(PPUEXT)
 
