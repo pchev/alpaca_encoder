@@ -3,14 +3,14 @@ unit cu_serial;
 {$MODE Delphi}
 
 {****************************************************************
-Copyright (C) 2000 Patrick Chevalley
+Copyright (C) 2020 Patrick Chevalley
 
 http://www.ap-i.net
 pch@ap-i.net
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
+as published by the Free Software Foundation; either version 3
 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
@@ -35,7 +35,7 @@ uses   Classes,
    {$ifdef mswindows}
    registry,
    {$endif}
-   synaser, SysUtils, FileUtil, synautil, blcksock, synsock;
+   synaser, SysUtils, synautil, blcksock, synsock;
 
 function OpenCom(var ser: TBlockSerial;
   CommPort, baud, parity, Data, stop, timeouts, inttimeout: string): boolean;

@@ -48,7 +48,6 @@ type
       function  DriverVersion:string; override;
       function  InterfaceVersion: integer; override;
       function  Name:string; override;
-      procedure SetupDialog(x:integer=-1;y:integer=-1); override;
       function  SupportedActions:TStringList; override;
       function  alignmentmode: integer; override;
       function  altitude: double; override;
@@ -775,29 +774,6 @@ procedure T_AlpacaEncoder.unpark;
 begin
   FErrorNumber:=ERR_NOT_IMPLEMENTED;
   FErrorMessage:=MSG_NOT_IMPLEMENTED;
-end;
-
-procedure T_AlpacaEncoder.SetupDialog(x:integer=-1;y:integer=-1);
-const margin=60;
-begin
-  if (x>=0) and (y>=0) then begin
-    with pop_encoder do
-     begin
-       if x > margin then left := x
-          else left := margin;
-       if left + Width > (Screen.Width - margin) then
-         left := Screen.Width - Width - margin;
-       if left < 0 then
-         left := 0;
-       if y > margin then top := y
-          else top := margin;
-       if top + Height > (Screen.Height - margin) then
-         top := Screen.Height - Height - margin;
-       if top < 0 then
-         top := 0;
-     end;
-  end;
-  pop_encoder.ScopeShow;
 end;
 
 function   T_AlpacaEncoder.GetSetupPage: string;

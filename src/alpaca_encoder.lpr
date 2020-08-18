@@ -27,8 +27,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, pu_server, cu_tcpserver, synapse, cu_alpacaserver, cu_alpacadevice, sysutils,
-  cu_alpacatelescope, cu_alpacaencoder, cu_encoderprotocol, cu_serial, cu_taki, pu_encoderclient;
+  Forms, pu_server, synapse, sysutils,
+  cu_alpacaencoder, cu_encoderprotocol, cu_taki, pu_encoderclient;
 
 {$R *.res}
 

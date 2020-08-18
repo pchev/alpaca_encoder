@@ -173,15 +173,18 @@
       <FormatVersion Value="2"/>
       <Modes Count="0"/>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="synapse"/>
+        <PackageName Value="alpacaserver"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="synapse"/>
       </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="6">
       <Unit0>
         <Filename Value="alpaca_encoder.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -194,44 +197,24 @@
         <ResourceBaseClass Value="Form"/>
       </Unit1>
       <Unit2>
-        <Filename Value="cu_tcpserver.pas"/>
+        <Filename Value="cu_alpacaencoder.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="cu_alpacaserver.pas"/>
+        <Filename Value="cu_encoderprotocol.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit3>
       <Unit4>
-        <Filename Value="cu_alpacadevice.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="cu_alpacatelescope.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="cu_alpacaencoder.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="cu_encoderprotocol.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="cu_serial.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit8>
-      <Unit9>
         <Filename Value="pu_encoderclient.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="pop_encoder"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit9>
-      <Unit10>
+      </Unit4>
+      <Unit5>
         <Filename Value="cu_taki.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit10>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

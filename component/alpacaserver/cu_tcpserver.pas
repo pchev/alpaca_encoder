@@ -2,14 +2,14 @@ unit cu_tcpserver;
 
 
 {
-Copyright (C) 2019 Patrick Chevalley
+Copyright (C) 2020 Patrick Chevalley
 
 http://www.ap-i.net
 pch@ap-i.net
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or
+the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
 This program is distributed in the hope that it will be useful,
@@ -30,7 +30,7 @@ interface
 
 uses
   blcksock, synsock, synautil, cu_alpacadevice,
-  Dialogs, LazUTF8, LazFileUtils, LCLIntf, SysUtils, Classes;
+  SysUtils, Classes;
 
 const
   Maxclient=100;
@@ -104,6 +104,94 @@ var
   res: integer;
 
 {$endif}
+
+procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
+                             ReadBackslash: boolean = false);
+// split spaces, quotes are parsed as single parameter
+// if ReadBackslash=true then \" is replaced to " and not treated as quote
+// #0 is always end
+type
+  TMode = (mNormal,mApostrophe,mQuote);
+var
+  p: Integer;
+  Mode: TMode;
+  Param: String;
+begin
+  p:=1;
+  while p<=length(Params) do
+  begin
+    // skip whitespace
+    while (p<=length(Params)) and (Params[p] in [' ',#9,#10,#13]) do inc(p);
+    if (p>length(Params)) or (Params[p]=#0) then
+      break;
+    //writeln('SplitCmdLineParams After Space p=',p,'=[',Params[p],']');
+    // read param
+    Param:='';
+    Mode:=mNormal;
+    while p<=length(Params) do
+    begin
+      case Params[p] of
+      #0:
+        break;
+      '\':
+        begin
+          inc(p);
+          if ReadBackslash then
+            begin
+            // treat next character as normal character
+            if (p>length(Params)) or (Params[p]=#0) then
+              break;
+            if ord(Params[p])<128 then
+            begin
+              Param+=Params[p];
+              inc(p);
+            end else begin
+              // next character is already a normal character
+            end;
+          end else begin
+            // treat backslash as normal character
+            Param+='\';
+          end;
+        end;
+      '''':
+        begin
+          inc(p);
+          case Mode of
+          mNormal:
+            Mode:=mApostrophe;
+          mApostrophe:
+            Mode:=mNormal;
+          mQuote:
+            Param+='''';
+          end;
+        end;
+      '"':
+        begin
+          inc(p);
+          case Mode of
+          mNormal:
+            Mode:=mQuote;
+          mApostrophe:
+            Param+='"';
+          mQuote:
+            Mode:=mNormal;
+          end;
+        end;
+      ' ',#9,#10,#13:
+        begin
+          if Mode=mNormal then break;
+          Param+=Params[p];
+          inc(p);
+        end;
+      else
+        Param+=Params[p];
+        inc(p);
+      end;
+    end;
+    //writeln('SplitCmdLineParams Param=#'+Param+'#');
+    ParamList.Add(Param);
+  end;
+end;
 
 constructor TTCPDaemon.Create;
 var i: integer;
@@ -322,7 +410,7 @@ begin
       begin
         if terminated then
           exit;
-        SendString(UTF8ToSys(str) + CRLF);
+        SendString(str + CRLF);
         if LastError <> 0 then
           terminate;
       end;
