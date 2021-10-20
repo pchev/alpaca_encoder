@@ -31,6 +31,7 @@ interface
 uses
   blcksock, synsock, synautil, cu_alpacadevice,
   SysUtils, Classes;
+ {for blocksock, load in Lazarus synapse.lpk!!!. Then it will compile}
 
 const
   Maxclient=100;
@@ -54,6 +55,7 @@ type
     abort, stoping: boolean;
     remoteip, remoteport: string;
     constructor Create(hsock: tSocket);
+    destructor Destroy; override;
     procedure Execute; override;
     procedure SendData(str: string);
     procedure ProcessGet;
@@ -362,10 +364,22 @@ begin
   id:=-1;
 end;
 
+destructor TTCPThrd.Destroy;
+begin
+  if FSock<>nil then begin
+    FSock.AbortSocket;
+    Fsock.Free;
+  end;
+  if assigned(FTerminate) then
+    FTerminate(id);
+  inherited Destroy;
+end;
+
 procedure TTCPThrd.Execute;
 var
   req,hdr,body,method,buf: string;
   args:Tstringlist;
+  cl: integer;
 begin
   try
     Fsock := TTCPBlockSocket.Create;
@@ -376,51 +390,52 @@ begin
       Fsock.socket := CSock;
       Fsock.GetSins;
       Fsock.MaxLineLength := 1024;
+      FSock.SetLinger(true,1000);
       remoteip := Fsock.GetRemoteSinIP;
       remoteport := IntToStr(Fsock.GetRemoteSinPort);
       with Fsock do
       begin
-        repeat
           if stoping or terminated then
-            break;
+            exit;
           req := RecvString(500);
           if lastError = 0 then
           begin
             hdr:='';
+            cl:=-1;
             repeat
-              buf:=RecvString(1);
+              buf:=RecvString(500);
               if trim(buf)='' then break;
               hdr:=hdr+crlf+buf;
+              if Pos('CONTENT-LENGTH:',UpperCase(buf))=1 then begin
+                delete(buf,1,15);
+                cl:=StrToIntDef(trim(buf),0);
+              end;
             until LastError<>0;
             body:='';
-            repeat
-              body:=body+RecvPacket(1);
-            until LastError<>0;
+            if cl>0 then begin
+              body:=RecvBufferStr(cl,500);
+            end
+            else if cl=0 then begin
+              repeat
+                body:=body+RecvPacket(500);
+              until LastError<>0;
+            end;
             SplitCmdLineParams(req,args);
             method:=uppercase(args[0]);
             if method='GET' then begin
                FHttpRequest:=args[1];
                Synchronize(@ProcessGet);
-               SendString(FHttpResult + crlf);
-               if lastError <> 0 then break;
-               break;
+               SendString(FHttpResult);
             end
             else if method='PUT' then begin
                FHttpRequest:=args[1];
                FBody:=body;
                Synchronize(@ProcessPut);
-               SendString(FHttpResult + crlf);
-               if lastError <> 0 then break;
-               break;
+               SendString(FHttpResult);
             end;
           end;
-        until False;
       end;
     finally
-      if assigned(FTerminate) then
-        FTerminate(id);
-      FSock.AbortSocket;
-      Fsock.Free;
       args.Free;
     end;
   except
