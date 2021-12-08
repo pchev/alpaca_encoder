@@ -70,7 +70,7 @@ begin
   AlpacaServer.onShowError:=@ShowError;
   AlpacaServer.onShowMsg:=@ShowMsg;
   AlpacaServer.onPortMsg:=@ShowSocket;
-  Encoder:=T_AlpacaEncoder.Create(self);
+  Encoder:=T_AlpacaEncoder.Create(nil);
   AlpacaServer.AddDevice(telescope,Encoder);
   AlpacaServer.IPAddr:=AlpacaIPAddr;
   AlpacaServer.IPPort:=AlpacaIPPort;
