@@ -180,7 +180,7 @@
         <PackageName Value="alpacaserver"/>
       </Item1>
       <Item2>
-        <PackageName Value="synapse"/>
+        <PackageName Value="laz_synapse"/>
       </Item2>
       <Item3>
         <PackageName Value="LCL"/>
