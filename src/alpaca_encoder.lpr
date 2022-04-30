@@ -33,7 +33,7 @@ uses
 {$R *.res}
 
 begin
-(*  {$ifdef USEHEAPTRC}
+  {$ifdef USEHEAPTRC}
     {$ifdef mswindows}
       DeleteFile('C:\Temp\alpaca_encoder_heap.trc');
       SetHeapTraceOutput('C:\Temp\alpaca_encoder_heap.trc');
@@ -41,7 +41,7 @@ begin
       DeleteFile('/tmp/alpaca_encoder_heap.trc');
       SetHeapTraceOutput('/tmp/alpaca_encoder_heap.trc');
     {$endif}
-  {$endif}   *)
+  {$endif}
 
   RequireDerivedFormResource:=True;
   Application.Scaled:=True;

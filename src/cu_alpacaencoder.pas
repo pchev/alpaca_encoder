@@ -96,13 +96,13 @@ type
       procedure setsitelatitude(value: double); override;
       function  sitelongitude: double; override;
       procedure setsitelongitude(value: double); override;
-      function  slewing: boolean; override;
+      function  is_slewing: boolean; override;
       function  slewsettletime: integer; override;
-      procedure setslewsettletime(value: integer); override;
+      procedure setslewsettletime(value: integer; out ok : boolean); override;
       function  targetdeclination: double; override;
-      procedure settargetdeclination(value: double); override;
+      procedure settargetdeclination(value: double; out ok : boolean); override;
       function  targetrightascension: double; override;
-      procedure settargetrightascension(value: double); override;
+      procedure settargetrightascension(value: double; out ok : boolean); override;
       function  tracking: boolean; override;
       procedure settracking(value: boolean); override;
       function  trackingrate: integer; override;
@@ -121,12 +121,12 @@ type
       procedure setpark; override;
       procedure slewtoaltaz(az,alt: double); override;
       procedure slewtoaltazasync(az,alt: double); override;
-      procedure slewtocoordinates(ra,dec: double); override;
-      procedure slewtocoordinatesasync(ra,dec: double); override;
+      procedure slewtocoordinates(ra,dec: double; out ok : boolean); override;
+      procedure slewtocoordinatesasync(ra,dec: double; out ok : boolean); override;
       procedure slewtotarget; override;
       procedure slewtotargetasync; override;
       procedure synctoaltaz(az,alt: double); override;
-      procedure synctocoordinates(ra,dec: double); override;
+      procedure synctocoordinates(ra,dec: double; out ok : boolean); override;
       procedure synctotarget; override;
       procedure unpark; override;
   end;
@@ -540,7 +540,7 @@ begin
   end;
 end;
 
-function  T_AlpacaEncoder.slewing: boolean;
+function  T_AlpacaEncoder.is_slewing: boolean;
 begin
   FErrorNumber:=ERR_NOT_IMPLEMENTED;
   FErrorMessage:=MSG_NOT_IMPLEMENTED;
@@ -554,10 +554,11 @@ begin
   result:=0;
 end;
 
-procedure T_AlpacaEncoder.setslewsettletime(value: integer);
+procedure T_AlpacaEncoder.setslewsettletime(value: integer; out ok : boolean);
 begin
   FErrorNumber:=ERR_NOT_IMPLEMENTED;
   FErrorMessage:=MSG_NOT_IMPLEMENTED;
+  ok:=true;
 end;
 
 function  T_AlpacaEncoder.targetdeclination: double;
@@ -571,13 +572,16 @@ begin
   end;
 end;
 
-procedure T_AlpacaEncoder.settargetdeclination(value: double);
+procedure T_AlpacaEncoder.settargetdeclination(value: double; out ok : boolean);
 begin
-  if (value>=-90)and(value<=90) then
-     TargetDEC:=value
+  if (value>=-90)and(value<=90) then begin
+     TargetDEC:=value;
+     ok:=true;
+  end
   else begin
     FErrorNumber:=ERR_INVALID_VALUE;
     FErrorMessage:=MSG_INVALID_VALUE +' dec='+ FormatFloat('0.000',value);
+    ok:=false;
   end;
 end;
 
@@ -592,13 +596,16 @@ begin
   end;
 end;
 
-procedure T_AlpacaEncoder.settargetrightascension(value: double);
+procedure T_AlpacaEncoder.settargetrightascension(value: double; out ok : boolean);
 begin
-  if (value>=0)and(value<=24) then
-     TargetRA:=value
+  if (value>=0)and(value<=24) then begin
+     TargetRA:=value;
+     ok:=true;
+  end
   else begin
     FErrorNumber:=ERR_INVALID_VALUE;
     FErrorMessage:=MSG_INVALID_VALUE +' ra='+ FormatFloat('0.000',value);
+    ok:=false;
   end;
 end;
 
@@ -706,16 +713,18 @@ begin
   FErrorMessage:=MSG_NOT_IMPLEMENTED;
 end;
 
-procedure T_AlpacaEncoder.slewtocoordinates(ra,dec: double);
+procedure T_AlpacaEncoder.slewtocoordinates(ra,dec: double; out ok : boolean);
 begin
   FErrorNumber:=ERR_NOT_IMPLEMENTED;
   FErrorMessage:=MSG_NOT_IMPLEMENTED;
+  ok:=true;
 end;
 
-procedure T_AlpacaEncoder.slewtocoordinatesasync(ra,dec: double);
+procedure T_AlpacaEncoder.slewtocoordinatesasync(ra,dec: double; out ok : boolean);
 begin
    FErrorNumber:=ERR_NOT_IMPLEMENTED;
   FErrorMessage:=MSG_NOT_IMPLEMENTED;
+  ok:=true;
 end;
 
 procedure T_AlpacaEncoder.slewtotarget;
@@ -736,10 +745,11 @@ begin
   FErrorMessage:=MSG_NOT_IMPLEMENTED;
 end;
 
-procedure T_AlpacaEncoder.synctocoordinates(ra,dec: double);
+procedure T_AlpacaEncoder.synctocoordinates(ra,dec: double; out ok : boolean);
 var txt: string;
 begin
   if (dec>=-90)and(dec<=90)and(ra>=0)and(ra<=24)  then begin
+    ok:=true;
     TargetRA:=ra;
     TargetDEC:=dec;
     txt:=pop_encoder.ScopeSync(ra,dec);
@@ -751,6 +761,7 @@ begin
   else begin
     FErrorNumber:=ERR_INVALID_VALUE;
     FErrorMessage:=MSG_INVALID_VALUE +' ra='+FormatFloat('0.000',ra)+' dec='+FormatFloat('0.000',ra);
+    ok:=false;
   end;
 end;
 
