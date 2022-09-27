@@ -8,7 +8,7 @@ AppVerName=Alpaca_Encoder V1
 AppPublisherURL=https://github.com/pchev/alpaca_encoder
 AppSupportURL=https://github.com/pchev/alpaca_encoder
 AppUpdatesURL=https://github.com/pchev/alpaca_encoder
-DefaultDirName={pf32}\Alpaca_Encoder
+DefaultDirName={commonpf32}\Alpaca_Encoder
 UsePreviousAppDir=false
 DefaultGroupName=Alpaca_Encoder
 AllowNoIcons=true
@@ -32,5 +32,5 @@ Source: Data\*; DestDir: {app}; Flags: ignoreversion recursesubdirs createallsub
 
 [Icons]
 Name: {group}\Alpaca_Encoder; Filename: {app}\alpaca_encoder.exe; WorkingDir: {app}
-Name: {userdesktop}\Alpaca_Encoder; Filename: {app}\alpaca_encoder.exe; WorkingDir: {app}; Tasks: desktopicon
+Name: {commondesktop}\Alpaca_Encoder; Filename: {app}\alpaca_encoder.exe; WorkingDir: {app}; Tasks: desktopicon
 
