@@ -1325,15 +1325,15 @@ begin
   begin
     a := last_init_alpha - trunc(last_init_alpha);
     b := trunc(last_init_alpha / 15);
-    s3 := Format(rsInitialisedA, [last_init, #13#10, #13#10,
+    s3 := Format(rsInitialisedA, [last_init, '; ', '; ',
       last_init_target, artostr(b + a), detostr(last_init_delta)]);
   end
   else
   begin
     s3 := rsNotInitialis;
   end;
-  result:=rsSytemStatus + #13#10 + cbo_port.Text +' '+ s1 +
-    #13#10 + s2 + #13#10 + s3 + #13#10 + s4 + #13#10 + s5 + #13#10;
+  result:=rsSytemStatus + '; ' + cbo_port.Text +' '+ s1 +
+    '; ' + s2 + '; ' + s3 + '; ' + s4 + '; ' + s5 + '; ';
 end;
 
 procedure Tpop_encoder.statusClick(Sender: TObject);
