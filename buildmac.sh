@@ -2,7 +2,7 @@
 
 version=$(grep 'encoder_version' src/pu_encoderclient.pas |head -1| cut -d\' -f2)
 
-basedir=/Volumes/TmpInst/alpaca_encoder   # Be sure this is set to a non existent directory, it is removed after the run!
+basedir=/tmp/alpaca_encoder   # Be sure this is set to a non existent directory, it is removed after the run!
 
 builddir=$basedir/alpaca_encoder
 
@@ -27,7 +27,7 @@ currentrev=$(git rev-list --count --first-parent HEAD)
   make CPU_TARGET=x86_64 clean
   make CPU_TARGET=x86_64
   if [[ $? -ne 0 ]]; then exit 1;fi
-  make install
+  make install CPU_TARGET=x86_64
   if [[ $? -ne 0 ]]; then exit 1;fi
   # pkg
   sed -i.bak "18s/1.0/$version/"  $builddir/alpaca_encoder.app/Contents/Info.plist
