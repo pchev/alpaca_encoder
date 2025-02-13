@@ -50,7 +50,7 @@ LCL_PLATFORM=carbon
 else
 LCL_PLATFORM=cocoa
 endif
-opt_target= -k-macosx_version_min -k10.10
+opt_target= -k-macosx_version_min -k10.14 -k-framework -kCocoa -k-weak_framework -kUserNotifications
 else
 LCL_PLATFORM=gtk2
 opt_target=
