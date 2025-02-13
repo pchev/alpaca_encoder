@@ -10,6 +10,8 @@ src/units/
 src/alpaca_encoder.app
 component/lib/
 component/synapse/source/lib/lib/
+component/alpacaserver/lib/
+component/synapse/lib/
 # ignore various files
 src/*.lps
 doc/alpaca_encoder.wiki
